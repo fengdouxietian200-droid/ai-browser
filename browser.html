@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="AI Browser">
+<title>AI Browser</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #13131a;
+    --surface2: #1c1c26;
+    --border: #2a2a3a;
+    --accent: #7c6aff;
+    --accent2: #ff6a9e;
+    --text: #e8e8f0;
+    --text2: #8888aa;
+    --radius: 16px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,10,15,0.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 16px;
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .search-bar {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 50px;
+    padding: 0 6px 0 16px;
+    gap: 4px;
+    transition: border-color 0.2s;
+  }
+
+  .search-bar:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(124,106,255,0.15);
+  }
+
+  .search-bar input {
+    flex: 1;
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    padding: 10px 0;
+  }
+
+  .search-bar input::placeholder { color: var(--text2); }
+
+  /* ✕ クリアボタン */
+  .clear-btn {
+    background: #2a2a3a;
+    border: none;
+    color: var(--text2);
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    flex-shrink: 0;
+    transition: all 0.15s;
+    line-height: 1;
+  }
+
+  .clear-btn:hover { background: var(--accent2); color: white; }
+  .clear-btn.visible { display: flex; }
+
+  .search-btn {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border: none;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    transition: transform 0.15s;
+    flex-shrink: 0;
+  }
+
+  .search-btn:hover { transform: scale(1.1); }
+
+  .main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px 16px 80px;
+  }
+
+  /* ── ホーム ── */
+  #home-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 60px;
+    gap: 36px;
+  }
+
+  .hero-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(32px, 8vw, 52px);
+    font-weight: 800;
+    text-align: center;
+    line-height: 1.1;
+    background: linear-gradient(135deg, #fff 30%, var(--accent) 70%, var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero-sub {
+    color: var(--text2);
+    font-size: 14px;
+    text-align: center;
+    margin-top: -28px;
+  }
+
+  .quick-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+    width: 100%;
+  }
+
+  .quick-link {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--text);
+  }
+
+  .quick-link:hover {
+    border-color: var(--accent);
+    background: var(--surface2);
+    transform: translateY(-2px);
+  }
+
+  .quick-link .icon { font-size: 24px; margin-bottom: 6px; }
+  .quick-link .name { font-size: 12px; color: var(--text2); }
+
+  /* ── 検索結果 ── */
+  #results-screen { display: none; }
+
+  .results-label {
+    font-size: 12px;
+    color: var(--text2);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .results-count {
+    background: var(--accent);
+    color: white;
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-size: 11px;
+  }
+
+  .result-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    animation: fadeUp 0.3s ease forwards;
+    opacity: 0;
+  }
+
+  .result-card:hover {
+    border-color: var(--accent);
+    background: var(--surface2);
+    transform: translateX(4px);
+  }
+
+  .result-source { font-size: 11px; color: var(--accent); margin-bottom: 4px; }
+
+  .result-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    margin-bottom: 6px;
+    line-height: 1.3;
+  }
+
+  .result-snippet {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* ── リーダー ── */
+  #reader-screen { display: none; }
+
+  .reader-nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .back-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 8px 14px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .back-btn:hover { border-color: var(--accent); }
+
+  .reader-url {
+    font-size: 11px;
+    color: var(--text2);
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .section-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text2);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* 書き出しテキスト */
+  .extracted-text-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+    max-height: 45vh;
+    overflow-y: auto;
+    font-size: 15px;
+    line-height: 2;
+    color: var(--text);
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  /* AI操作 */
+  .ai-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .ai-btn {
+    padding: 13px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    transition: all 0.2s;
+  }
+
+  .ai-btn:hover { border-color: var(--accent); background: var(--surface2); }
+  .ai-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+  .ai-btn.primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-color: transparent;
+    color: white;
+  }
+
+  .ai-btn.primary:hover { opacity: 0.88; transform: translateY(-1px); }
+
+  .custom-prompt {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .custom-prompt input {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 50px;
+    padding: 10px 16px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .custom-prompt input:focus { border-color: var(--accent); }
+  .custom-prompt input::placeholder { color: var(--text2); }
+
+  .custom-prompt button {
+    background: var(--accent);
+    border: none;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 13px;
+    white-space: nowrap;
+    transition: opacity 0.2s;
+  }
+
+  .custom-prompt button:hover { opacity: 0.85; }
+
+  .ai-result {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    display: none;
+    animation: fadeUp 0.3s ease;
+    margin-bottom: 12px;
+  }
+
+  .ai-result.visible { display: block; }
+
+  .ai-result-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  .ai-badge {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: white;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 50px;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .ai-result-text {
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--text);
+    white-space: pre-wrap;
+  }
+
+  .loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 30px;
+    color: var(--text2);
+    font-size: 14px;
+  }
+
+  .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: bounce 0.8s infinite;
+  }
+  .dot:nth-child(2) { animation-delay: 0.15s; }
+  .dot:nth-child(3) { animation-delay: 0.3s; }
+
+  @keyframes bounce {
+    0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+    40% { transform: scale(1); opacity: 1; }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .error-msg {
+    background: rgba(255,100,100,0.1);
+    border: 1px solid rgba(255,100,100,0.3);
+    border-radius: 12px;
+    padding: 14px 16px;
+    color: #ff8888;
+    font-size: 13px;
+    margin-bottom: 12px;
+    display: none;
+  }
+
+  .error-msg.visible { display: block; }
+
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">AI✦</div>
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="検索 または URL を入力..." autocomplete="off" />
+      <button class="clear-btn" id="clearBtn" onclick="clearSearch()" title="クリア">✕</button>
+      <button class="search-btn" onclick="handleSearch()">→</button>
+    </div>
+  </div>
+</header>
+
+<main class="main">
+
+  <!-- ホーム -->
+  <div id="home-screen">
+    <div>
+      <div class="hero-title">AI Browser</div>
+      <div class="hero-sub">韓国小説を読む・翻訳・AI解説</div>
+    </div>
+    <div class="quick-links">
+      <div class="quick-link" onclick="openReader('https://www.munpia.com')">
+        <div class="icon">📖</div><div class="name">Munpia</div>
+      </div>
+      <div class="quick-link" onclick="setSearch('munpia 판타지 소설')">
+        <div class="icon">⚔️</div><div class="name">판타지</div>
+      </div>
+      <div class="quick-link" onclick="setSearch('munpia 로맨스')">
+        <div class="icon">💕</div><div class="name">로맨스</div>
+      </div>
+      <div class="quick-link" onclick="setSearch('munpia 무협')">
+        <div class="icon">🥷</div><div class="name">무협</div>
+      </div>
+      <div class="quick-link" onclick="setSearch('munpia 인기 소설')">
+        <div class="icon">🔥</div><div class="name">인기</div>
+      </div>
+      <div class="quick-link" onclick="setSearch('munpia 최신 소설')">
+        <div class="icon">🆕</div><div class="name">최신</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 検索結果 -->
+  <div id="results-screen">
+    <div class="results-label">
+      <span class="results-count" id="resultsCount">0</span> 件の結果
+    </div>
+    <div id="resultsList"></div>
+  </div>
+
+  <!-- リーダー -->
+  <div id="reader-screen">
+    <div class="reader-nav">
+      <button class="back-btn" onclick="goBack()">← 戻る</button>
+      <div class="reader-url" id="readerUrl"></div>
+    </div>
+
+    <div class="section-label">📄 書き出しテキスト</div>
+    <div class="extracted-text-box" id="extractedText">
+      <div class="loading"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+    </div>
+
+    <div class="section-label">🤖 AI操作</div>
+    <div class="ai-actions">
+      <button class="ai-btn primary" id="btn-translate" onclick="aiAction('translate')">🌐 日本語に翻訳</button>
+      <button class="ai-btn" id="btn-explain" onclick="aiAction('explain')">🤖 場面を解説</button>
+      <button class="ai-btn" id="btn-summary" onclick="aiAction('summary')">📝 あらすじ要約</button>
+      <button class="ai-btn" id="btn-chars" onclick="aiAction('chars')">👥 登場人物整理</button>
+    </div>
+
+    <div class="custom-prompt">
+      <input type="text" id="customPromptInput" placeholder="AIに質問（例：主人公の心情は？）" />
+      <button onclick="aiCustom()">送信</button>
+    </div>
+
+    <div class="error-msg" id="errorMsg"></div>
+
+    <div class="ai-result" id="aiResult">
+      <div class="ai-result-header">✦ AI回答 <span class="ai-badge">Gemini</span></div>
+      <div class="ai-result-text" id="aiResultText"></div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+const API_KEY = 'AIzaSyBUr2gGmCb6chkrXqA0TGvNl9BWYG17hpo';
+let currentText = '';
+let currentQuery = '';
+
+// ── 検索バー ──
+const searchInput = document.getElementById('searchInput');
+const clearBtn = document.getElementById('clearBtn');
+
+searchInput.addEventListener('input', () => {
+  clearBtn.classList.toggle('visible', searchInput.value.length > 0);
+});
+
+searchInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter') handleSearch();
+});
+
+searchInput.addEventListener('focus', () => {
+  setTimeout(() => searchInput.select(), 0);
+});
+
+function clearSearch() {
+  searchInput.value = '';
+  clearBtn.classList.remove('visible');
+  searchInput.focus();
+}
+
+function setSearch(q) {
+  searchInput.value = q;
+  clearBtn.classList.add('visible');
+  handleSearch();
+}
+
+function handleSearch() {
+  const val = searchInput.value.trim();
+  if (!val) return;
+
+  if (val.startsWith('http://') || val.startsWith('https://')) {
+    openReader(val);
+    return;
+  }
+
+  currentQuery = val;
+  showScreen('results');
+  searchWithGemini(val);
+}
+
+// ── Gemini検索 ──
+async function searchWithGemini(query) {
+  const list = document.getElementById('resultsList');
+  list.innerHTML = loadingHTML('検索中...');
+
+  try {
+    const prompt = `あなたは検索エンジンです。「${query}」で検索した結果を10件、以下のJSON形式のみで返してください（説明・マークダウン不要）:
+[{"title":"タイトル","snippet":"説明2〜3文","url":"https://実在するURL","source":"ドメイン"}]
+条件: munpiaや韓国小説サイトのURLを優先。実在しそうな具体的なURLにする。必ず10件。`;
+
+    const text = await callGeminiRaw(prompt, 0.3, 2000);
+    const clean = text.replace(/```json|```/g, '').trim();
+    const results = JSON.parse(clean);
+
+    document.getElementById('resultsCount').textContent = results.length;
+    list.innerHTML = '';
+    results.forEach((r, i) => {
+      const card = document.createElement('div');
+      card.className = 'result-card';
+      card.style.animationDelay = `${i * 0.05}s`;
+      card.innerHTML = `
+        <div class="result-source">🔗 ${esc(r.source || '')}</div>
+        <div class="result-title">${esc(r.title)}</div>
+        <div class="result-snippet">${esc(r.snippet)}</div>
+      `;
+      card.onclick = () => openReader(r.url, r.title, r.snippet);
+      list.appendChild(card);
+    });
+  } catch(e) {
+    list.innerHTML = `<div class="error-msg visible" style="display:block">検索エラー: ${e.message}</div>`;
+  }
+}
+
+// ── リーダービュー ──
+async function openReader(url, title='', snippet='') {
+  showScreen('reader');
+  document.getElementById('readerUrl').textContent = url;
+  document.getElementById('aiResult').classList.remove('visible');
+  document.getElementById('errorMsg').classList.remove('visible');
+  document.getElementById('extractedText').innerHTML = loadingHTML('テキストを取得中...');
+  setAiBtns(true);
+
+  try {
+    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+    const res = await fetch(proxyUrl);
+    const data = await res.json();
+    const html = data.contents;
+
+    if (!html) throw new Error('ページを取得できませんでした');
+
+    const text = extractText(html);
+    currentText = text;
+
+    document.getElementById('extractedText').textContent =
+      currentText.trim() || '（テキストを抽出できませんでした）';
+    setAiBtns(false);
+
+  } catch(e) {
+    currentText = snippet || title;
+    document.getElementById('extractedText').textContent =
+      `⚠️ ページの直接読み込みができませんでした。\n\n${snippet || 'スニペットがありません。'}\n\n→ 元のページ: ${url}`;
+    setAiBtns(false);
+    showError('ページ読み込み失敗。スニペットのみ表示しています。');
+  }
+}
+
+function extractText(html) {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+
+  ['script','style','nav','footer','header','aside','iframe','noscript','button'].forEach(tag => {
+    doc.querySelectorAll(tag).forEach(el => el.remove());
+  });
+
+  // munpia向けセレクタ優先
+  const selectors = [
+    '.novel_view', '.view-content', '#novel_content', '.chapter-content',
+    'article', 'main', '[role="main"]',
+    '.post-content', '.article-body', '.entry-content',
+    '#content', '.content'
+  ];
+
+  let mainEl = null;
+  for (const sel of selectors) {
+    const el = doc.querySelector(sel);
+    if (el && el.textContent.trim().length > 100) { mainEl = el; break; }
+  }
+  if (!mainEl) mainEl = doc.body;
+
+  return ((mainEl?.innerText || mainEl?.textContent || '').trim()).substring(0, 10000);
+}
+
+// ── AI操作 ──
+async function aiAction(type) {
+  if (!currentText || currentText.length < 5) {
+    showError('テキストがありません。');
+    return;
+  }
+
+  const src = currentText.substring(0, 4000);
+
+  const prompts = {
+    translate: `以下の韓国語テキストを自然で読みやすい日本語に翻訳してください。翻訳文のみ出力してください:\n\n${src}`,
+    explain:   `以下は韓国小説の一場面です。日本語で詳しく解説してください。登場人物の感情・状況・重要な描写を丁寧に説明してください:\n\n${src}`,
+    summary:   `以下の韓国小説の内容を日本語で要約してください。あらすじを3〜5文でまとめてください:\n\n${src}`,
+    chars:     `以下の韓国小説テキストから登場人物を整理してください。名前・役割・特徴を日本語でリスト形式で書いてください:\n\n${src}`
+  };
+
+  await runAI(prompts[type]);
+}
+
+async function aiCustom() {
+  const input = document.getElementById('customPromptInput');
+  const q = input.value.trim();
+  if (!q) return;
+
+  const src = currentText.substring(0, 3000);
+  const prompt = src
+    ? `以下の韓国小説の内容について、日本語で答えてください。\n\n内容:\n${src}\n\n質問: ${q}`
+    : q;
+
+  await runAI(prompt);
+  input.value = '';
+}
+
+async function runAI(prompt) {
+  const box = document.getElementById('aiResult');
+  const textEl = document.getElementById('aiResultText');
+  document.getElementById('errorMsg').classList.remove('visible');
+  box.classList.add('visible');
+  textEl.innerHTML = loadingHTML('');
+
+  try {
+    const result = await callGeminiRaw(prompt, 0.7, 2000);
+    textEl.textContent = result;
+  } catch(e) {
+    box.classList.remove('visible');
+    showError(`AIエラー: ${e.message}`);
+  }
+}
+
+async function callGeminiRaw(prompt, temperature=0.7, maxTokens=1500) {
+  const res = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { maxOutputTokens: maxTokens, temperature }
+      })
+    }
+  );
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.message);
+  return data.candidates?.[0]?.content?.parts?.[0]?.text || '回答を取得できませんでした。';
+}
+
+// ── ユーティリティ ──
+function showScreen(name) {
+  document.getElementById('home-screen').style.display    = name === 'home'    ? 'flex'  : 'none';
+  document.getElementById('results-screen').style.display = name === 'results' ? 'block' : 'none';
+  document.getElementById('reader-screen').style.display  = name === 'reader'  ? 'block' : 'none';
+}
+
+function goBack() {
+  currentQuery ? showScreen('results') : showScreen('home');
+}
+
+function showError(msg) {
+  const el = document.getElementById('errorMsg');
+  el.textContent = msg;
+  el.classList.add('visible');
+}
+
+function setAiBtns(disabled) {
+  ['btn-translate','btn-explain','btn-summary','btn-chars'].forEach(id => {
+    document.getElementById(id).disabled = disabled;
+  });
+}
+
+function loadingHTML(label='') {
+  return `<div class="loading"><div class="dot"></div><div class="dot"></div><div class="dot"></div>${label ? `<span style="margin-left:6px">${label}</span>` : ''}</div>`;
+}
+
+function esc(str) {
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>
