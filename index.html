@@ -31,11 +31,12 @@
     overflow-x: hidden;
   }
 
+  /* ── ヘッダー ── */
   .header {
     position: sticky;
     top: 0;
     z-index: 100;
-    background: rgba(10,10,15,0.92);
+    background: rgba(10,10,15,0.94);
     backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border);
     padding: 12px 16px;
@@ -58,6 +59,7 @@
     -webkit-text-fill-color: transparent;
     white-space: nowrap;
     flex-shrink: 0;
+    cursor: pointer;
   }
 
   .search-bar {
@@ -90,7 +92,6 @@
 
   .search-bar input::placeholder { color: var(--text2); }
 
-  /* ✕ クリアボタン */
   .clear-btn {
     background: #2a2a3a;
     border: none;
@@ -105,9 +106,7 @@
     font-size: 11px;
     flex-shrink: 0;
     transition: all 0.15s;
-    line-height: 1;
   }
-
   .clear-btn:hover { background: var(--accent2); color: white; }
   .clear-btn.visible { display: flex; }
 
@@ -126,9 +125,51 @@
     transition: transform 0.15s;
     flex-shrink: 0;
   }
-
   .search-btn:hover { transform: scale(1.1); }
 
+  /* ── タブ ── */
+  .tab-bar {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    background: rgba(10,10,15,0.94);
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .tab-btn {
+    flex: 1;
+    padding: 10px 8px;
+    background: none;
+    border: none;
+    color: var(--text2);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+  }
+
+  .tab-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  .tab-wrap {
+    position: sticky;
+    top: 57px;
+    z-index: 99;
+    background: rgba(10,10,15,0.94);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 16px;
+  }
+
+  /* ── メイン ── */
   .main {
     max-width: 900px;
     margin: 0 auto;
@@ -140,8 +181,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 60px;
-    gap: 36px;
+    padding-top: 50px;
+    gap: 32px;
   }
 
   .hero-title {
@@ -159,7 +200,7 @@
     color: var(--text2);
     font-size: 14px;
     text-align: center;
-    margin-top: -28px;
+    margin-top: -24px;
   }
 
   .quick-links {
@@ -271,7 +312,6 @@
     transition: all 0.2s;
     white-space: nowrap;
   }
-
   .back-btn:hover { border-color: var(--accent); }
 
   .reader-url {
@@ -303,14 +343,13 @@
     background: var(--border);
   }
 
-  /* 書き出しテキスト */
   .extracted-text-box {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: 20px;
     margin-bottom: 16px;
-    max-height: 45vh;
+    max-height: 40vh;
     overflow-y: auto;
     font-size: 15px;
     line-height: 2;
@@ -319,7 +358,6 @@
     word-break: break-word;
   }
 
-  /* AI操作 */
   .ai-actions {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -352,7 +390,6 @@
     border-color: transparent;
     color: white;
   }
-
   .ai-btn.primary:hover { opacity: 0.88; transform: translateY(-1px); }
 
   .custom-prompt {
@@ -373,7 +410,6 @@
     outline: none;
     transition: border-color 0.2s;
   }
-
   .custom-prompt input:focus { border-color: var(--accent); }
   .custom-prompt input::placeholder { color: var(--text2); }
 
@@ -388,9 +424,149 @@
     white-space: nowrap;
     transition: opacity 0.2s;
   }
-
   .custom-prompt button:hover { opacity: 0.85; }
 
+  /* ── 翻訳画面 ── */
+  #translate-screen { display: none; }
+
+  .translate-header {
+    margin-bottom: 20px;
+  }
+
+  .translate-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .translate-sub {
+    font-size: 13px;
+    color: var(--text2);
+  }
+
+  .mode-pills {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+
+  .mode-pill {
+    padding: 7px 16px;
+    border-radius: 50px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text2);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .mode-pill.active {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-color: transparent;
+    color: white;
+    font-weight: 500;
+  }
+
+  .style-pills {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .style-label {
+    font-size: 12px;
+    color: var(--text2);
+  }
+
+  .style-pill {
+    padding: 5px 14px;
+    border-radius: 50px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text2);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .style-pill.active {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .paste-area {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 4px 16px;
+    margin-bottom: 12px;
+    transition: border-color 0.2s;
+  }
+
+  .paste-area:focus-within { border-color: var(--accent); }
+
+  .paste-area textarea {
+    width: 100%;
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.8;
+    resize: none;
+    min-height: 140px;
+    padding: 14px 0;
+  }
+
+  .paste-area textarea::placeholder { color: var(--text2); }
+
+  .paste-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0 10px;
+    border-top: 1px solid var(--border);
+  }
+
+  .char-count { font-size: 11px; color: var(--text2); }
+
+  .clear-text-btn {
+    background: none;
+    border: none;
+    color: var(--text2);
+    font-size: 12px;
+    cursor: pointer;
+    padding: 2px 8px;
+    border-radius: 4px;
+    transition: color 0.15s;
+  }
+  .clear-text-btn:hover { color: var(--accent2); }
+
+  .run-btn {
+    width: 100%;
+    padding: 14px;
+    border-radius: var(--radius);
+    border: none;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.15s;
+    margin-bottom: 16px;
+  }
+  .run-btn:hover { opacity: 0.88; }
+  .run-btn:active { transform: scale(0.98); }
+  .run-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* ── 共通AI結果 ── */
   .ai-result {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -400,7 +576,6 @@
     animation: fadeUp 0.3s ease;
     margin-bottom: 12px;
   }
-
   .ai-result.visible { display: block; }
 
   .ai-result-header {
@@ -424,11 +599,25 @@
 
   .ai-result-text {
     font-size: 14px;
-    line-height: 1.8;
+    line-height: 1.9;
     color: var(--text);
     white-space: pre-wrap;
   }
 
+  .copy-btn {
+    margin-top: 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text2);
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── 共通 ── */
   .loading {
     display: flex;
     align-items: center;
@@ -468,7 +657,6 @@
     margin-bottom: 12px;
     display: none;
   }
-
   .error-msg.visible { display: block; }
 
   ::-webkit-scrollbar { width: 4px; }
@@ -480,14 +668,21 @@
 
 <header class="header">
   <div class="header-inner">
-    <div class="logo">AI✦</div>
+    <div class="logo" onclick="goHome()">AI✦</div>
     <div class="search-bar">
-      <input type="text" id="searchInput" placeholder="検索 または URL を入力..." autocomplete="off" />
-      <button class="clear-btn" id="clearBtn" onclick="clearSearch()" title="クリア">✕</button>
+      <input type="text" id="searchInput" placeholder="" autocomplete="off" />
+      <button class="clear-btn" id="clearBtn" onclick="clearSearch()">✕</button>
       <button class="search-btn" onclick="handleSearch()">→</button>
     </div>
   </div>
 </header>
+
+<div class="tab-wrap">
+  <div class="tab-bar">
+    <button class="tab-btn active" id="tab-search" onclick="switchTab('search')">🏠 ホーム</button>
+    <button class="tab-btn" id="tab-translate" onclick="switchTab('translate')">🌐 翻訳・解説</button>
+  </div>
+</div>
 
 <main class="main">
 
@@ -495,7 +690,7 @@
   <div id="home-screen">
     <div>
       <div class="hero-title">AI Browser</div>
-      <div class="hero-sub">韓国小説を読む・翻訳・AI解説</div>
+      <div class="hero-sub">韓国小説を検索・翻訳・AI解説</div>
     </div>
     <div class="quick-links">
       <div class="quick-link" onclick="openReader('https://www.munpia.com')">
@@ -517,6 +712,9 @@
         <div class="icon">🆕</div><div class="name">최신</div>
       </div>
     </div>
+    <div style="text-align:center; font-size:13px; color:var(--text2); margin-top:-16px;">
+      💡 「翻訳・解説」タブから韓国語テキストを貼り付けてAI解析もできます
+    </div>
   </div>
 
   <!-- 検索結果 -->
@@ -534,7 +732,7 @@
       <div class="reader-url" id="readerUrl"></div>
     </div>
 
-    <div class="section-label">📄 書き出しテキスト</div>
+    <div class="section-label">📄 取得テキスト</div>
     <div class="extracted-text-box" id="extractedText">
       <div class="loading"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
     </div>
@@ -552,20 +750,97 @@
       <button onclick="aiCustom()">送信</button>
     </div>
 
-    <div class="error-msg" id="errorMsg"></div>
+    <div class="error-msg" id="readerErrorMsg"></div>
 
-    <div class="ai-result" id="aiResult">
+    <div class="ai-result" id="readerAiResult">
       <div class="ai-result-header">✦ AI回答 <span class="ai-badge">Gemini</span></div>
-      <div class="ai-result-text" id="aiResultText"></div>
+      <div class="ai-result-text" id="readerAiResultText"></div>
+      <button class="copy-btn" onclick="copyResult('readerAiResultText')">📋 コピー</button>
+    </div>
+  </div>
+
+  <!-- 翻訳・解説画面 -->
+  <div id="translate-screen">
+    <div class="translate-header">
+      <div class="translate-title">翻訳 & AI解説</div>
+      <div class="translate-sub">韓国語テキストを貼り付けてAIで翻訳・解説します</div>
+    </div>
+
+    <div class="mode-pills">
+      <button class="mode-pill active" onclick="setTlMode(this,'translate')">🌐 翻訳</button>
+      <button class="mode-pill" onclick="setTlMode(this,'explain')">📖 文学解説</button>
+      <button class="mode-pill" onclick="setTlMode(this,'summary')">📝 あらすじ要約</button>
+      <button class="mode-pill" onclick="setTlMode(this,'chars')">👥 登場人物整理</button>
+      <button class="mode-pill" onclick="setTlMode(this,'both')">🌐+📖 翻訳＋解説</button>
+    </div>
+
+    <div class="style-pills" id="stylePills">
+      <span class="style-label">翻訳スタイル：</span>
+      <button class="style-pill active" onclick="setTlStyle(this,'natural')">自然な日本語</button>
+      <button class="style-pill" onclick="setTlStyle(this,'literary')">文学的</button>
+      <button class="style-pill" onclick="setTlStyle(this,'literal')">直訳</button>
+    </div>
+
+    <div class="paste-area">
+      <textarea id="pasteInput" placeholder="ここに韓国語テキストを貼り付けてください...
+
+例）
+나는 그날 아침 오랫동안 창밖을 바라보았다.
+빗소리가 조용히 들려왔다." oninput="updateCharCount()"></textarea>
+      <div class="paste-footer">
+        <span class="char-count" id="charCount">0 文字</span>
+        <button class="clear-text-btn" onclick="clearPaste()">クリア</button>
+      </div>
+    </div>
+
+    <button class="run-btn" id="runBtn" onclick="runTranslate()">実行する →</button>
+
+    <div class="error-msg" id="tlErrorMsg"></div>
+
+    <div class="ai-result" id="tlResult1">
+      <div class="ai-result-header" id="tlResult1Header">✦ 日本語翻訳 <span class="ai-badge">Gemini</span></div>
+      <div class="ai-result-text" id="tlResult1Text"></div>
+      <button class="copy-btn" onclick="copyResult('tlResult1Text')">📋 コピー</button>
+    </div>
+
+    <div class="ai-result" id="tlResult2">
+      <div class="ai-result-header">✦ AI文学解説 <span class="ai-badge">Gemini</span></div>
+      <div class="ai-result-text" id="tlResult2Text"></div>
+      <button class="copy-btn" onclick="copyResult('tlResult2Text')">📋 コピー</button>
     </div>
   </div>
 
 </main>
 
 <script>
-const API_KEY = 'AIzaSyBUr2gGmCb6chkrXqA0TGvNl9BWYG17hpo';
+const API_KEY = 'AIzaSyCa6ePn_zukU7gDuwZw3kZbEq8VDXmnvqo';
 let currentText = '';
 let currentQuery = '';
+let currentTab = 'search';
+let tlMode = 'translate';
+let tlStyle = 'natural';
+
+// ── タブ切り替え ──
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+
+  if (tab === 'search') {
+    document.getElementById('translate-screen').style.display = 'none';
+    const cur = getCurrentSearchScreen();
+    showScreenInternal(cur);
+  } else {
+    showScreenInternal('none');
+    document.getElementById('translate-screen').style.display = 'block';
+  }
+}
+
+function getCurrentSearchScreen() {
+  if (document.getElementById('reader-screen').style.display === 'block') return 'reader';
+  if (document.getElementById('results-screen').style.display === 'block') return 'results';
+  return 'home';
+}
 
 // ── 検索バー ──
 const searchInput = document.getElementById('searchInput');
@@ -574,19 +849,17 @@ const clearBtn = document.getElementById('clearBtn');
 searchInput.addEventListener('input', () => {
   clearBtn.classList.toggle('visible', searchInput.value.length > 0);
 });
-
-searchInput.addEventListener('keydown', e => {
-  if (e.key === 'Enter') handleSearch();
-});
-
-searchInput.addEventListener('focus', () => {
-  setTimeout(() => searchInput.select(), 0);
-});
+searchInput.addEventListener('keydown', e => { if (e.key === 'Enter') handleSearch(); });
+searchInput.addEventListener('focus', () => { setTimeout(() => searchInput.select(), 0); });
 
 function clearSearch() {
   searchInput.value = '';
   clearBtn.classList.remove('visible');
   searchInput.focus();
+}
+
+function openSite(url) {
+  window.open(url, '_blank');
 }
 
 function setSearch(q) {
@@ -605,8 +878,15 @@ function handleSearch() {
   }
 
   currentQuery = val;
+  switchTab('search');
   showScreen('results');
   searchWithGemini(val);
+}
+
+function goHome() {
+  currentQuery = '';
+  showScreen('home');
+  switchTab('search');
 }
 
 // ── Gemini検索 ──
@@ -619,7 +899,7 @@ async function searchWithGemini(query) {
 [{"title":"タイトル","snippet":"説明2〜3文","url":"https://実在するURL","source":"ドメイン"}]
 条件: munpiaや韓国小説サイトのURLを優先。実在しそうな具体的なURLにする。必ず10件。`;
 
-    const text = await callGeminiRaw(prompt, 0.3, 2000);
+    const text = await callGemini(prompt, 0.3, 2000);
     const clean = text.replace(/```json|```/g, '').trim();
     const results = JSON.parse(clean);
 
@@ -642,12 +922,13 @@ async function searchWithGemini(query) {
   }
 }
 
-// ── リーダービュー ──
+// ── リーダー ──
 async function openReader(url, title='', snippet='') {
+  switchTab('search');
   showScreen('reader');
   document.getElementById('readerUrl').textContent = url;
-  document.getElementById('aiResult').classList.remove('visible');
-  document.getElementById('errorMsg').classList.remove('visible');
+  document.getElementById('readerAiResult').classList.remove('visible');
+  document.getElementById('readerErrorMsg').classList.remove('visible');
   document.getElementById('extractedText').innerHTML = loadingHTML('テキストを取得中...');
   setAiBtns(true);
 
@@ -656,101 +937,197 @@ async function openReader(url, title='', snippet='') {
     const res = await fetch(proxyUrl);
     const data = await res.json();
     const html = data.contents;
-
     if (!html) throw new Error('ページを取得できませんでした');
 
     const text = extractText(html);
     currentText = text;
-
     document.getElementById('extractedText').textContent =
-      currentText.trim() || '（テキストを抽出できませんでした）';
+      currentText.trim() || '（テキストを抽出できませんでした。CORSの制限があります）';
     setAiBtns(false);
-
   } catch(e) {
     currentText = snippet || title;
     document.getElementById('extractedText').textContent =
-      `⚠️ ページの直接読み込みができませんでした。\n\n${snippet || 'スニペットがありません。'}\n\n→ 元のページ: ${url}`;
+      `⚠️ ページの直接読み込みができませんでした。\n\n${snippet || 'スニペットがありません。'}\n\n→ 元のページ: ${url}\n\n💡 テキストをコピーして「翻訳・解説」タブに貼り付けてください`;
     setAiBtns(false);
-    showError('ページ読み込み失敗。スニペットのみ表示しています。');
+    showReaderError('ページ読み込み失敗。テキストをコピーして「翻訳・解説」タブをお使いください。');
   }
 }
 
 function extractText(html) {
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, 'text/html');
-
   ['script','style','nav','footer','header','aside','iframe','noscript','button'].forEach(tag => {
     doc.querySelectorAll(tag).forEach(el => el.remove());
   });
-
-  // munpia向けセレクタ優先
   const selectors = [
     '.novel_view', '.view-content', '#novel_content', '.chapter-content',
     'article', 'main', '[role="main"]',
     '.post-content', '.article-body', '.entry-content',
     '#content', '.content'
   ];
-
   let mainEl = null;
   for (const sel of selectors) {
     const el = doc.querySelector(sel);
     if (el && el.textContent.trim().length > 100) { mainEl = el; break; }
   }
   if (!mainEl) mainEl = doc.body;
-
   return ((mainEl?.innerText || mainEl?.textContent || '').trim()).substring(0, 10000);
 }
 
-// ── AI操作 ──
+// ── リーダーAI操作 ──
 async function aiAction(type) {
   if (!currentText || currentText.length < 5) {
-    showError('テキストがありません。');
+    showReaderError('テキストがありません。');
     return;
   }
-
   const src = currentText.substring(0, 4000);
-
   const prompts = {
-    translate: `以下の韓国語テキストを自然で読みやすい日本語に翻訳してください。翻訳文のみ出力してください:\n\n${src}`,
-    explain:   `以下は韓国小説の一場面です。日本語で詳しく解説してください。登場人物の感情・状況・重要な描写を丁寧に説明してください:\n\n${src}`,
-    summary:   `以下の韓国小説の内容を日本語で要約してください。あらすじを3〜5文でまとめてください:\n\n${src}`,
-    chars:     `以下の韓国小説テキストから登場人物を整理してください。名前・役割・特徴を日本語でリスト形式で書いてください:\n\n${src}`
+    translate: `以下の韓国語テキストを自然で読みやすい日本語に翻訳してください:\n\n${src}`,
+    explain:   `以下は韓国小説の一場面です。日本語で詳しく解説してください:\n\n${src}`,
+    summary:   `以下の韓国小説の内容を日本語で3〜5文で要約してください:\n\n${src}`,
+    chars:     `以下の韓国小説テキストから登場人物を日本語でリスト形式で整理してください:\n\n${src}`
   };
-
-  await runAI(prompts[type]);
+  await runReaderAI(prompts[type]);
 }
 
 async function aiCustom() {
   const input = document.getElementById('customPromptInput');
   const q = input.value.trim();
   if (!q) return;
-
   const src = currentText.substring(0, 3000);
   const prompt = src
     ? `以下の韓国小説の内容について、日本語で答えてください。\n\n内容:\n${src}\n\n質問: ${q}`
     : q;
-
-  await runAI(prompt);
+  await runReaderAI(prompt);
   input.value = '';
 }
 
-async function runAI(prompt) {
-  const box = document.getElementById('aiResult');
-  const textEl = document.getElementById('aiResultText');
-  document.getElementById('errorMsg').classList.remove('visible');
+async function runReaderAI(prompt) {
+  const box = document.getElementById('readerAiResult');
+  const textEl = document.getElementById('readerAiResultText');
+  document.getElementById('readerErrorMsg').classList.remove('visible');
   box.classList.add('visible');
   textEl.innerHTML = loadingHTML('');
-
   try {
-    const result = await callGeminiRaw(prompt, 0.7, 2000);
+    const result = await callGemini(prompt, 0.7, 2000);
     textEl.textContent = result;
   } catch(e) {
     box.classList.remove('visible');
-    showError(`AIエラー: ${e.message}`);
+    showReaderError(`AIエラー: ${e.message}`);
   }
 }
 
-async function callGeminiRaw(prompt, temperature=0.7, maxTokens=1500) {
+// ── 翻訳・解説画面 ──
+function setTlMode(btn, mode) {
+  tlMode = mode;
+  document.querySelectorAll('.mode-pill').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('stylePills').style.display =
+    (mode === 'explain' || mode === 'summary' || mode === 'chars') ? 'none' : 'flex';
+}
+
+function setTlStyle(btn, style) {
+  tlStyle = style;
+  document.querySelectorAll('.style-pill').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function updateCharCount() {
+  const len = document.getElementById('pasteInput').value.length;
+  document.getElementById('charCount').textContent = `${len.toLocaleString()} 文字`;
+}
+
+function clearPaste() {
+  document.getElementById('pasteInput').value = '';
+  document.getElementById('charCount').textContent = '0 文字';
+  document.getElementById('tlResult1').classList.remove('visible');
+  document.getElementById('tlResult2').classList.remove('visible');
+  document.getElementById('tlErrorMsg').classList.remove('visible');
+}
+
+async function runTranslate() {
+  const text = document.getElementById('pasteInput').value.trim();
+  if (!text) {
+    showTlError('テキストを入力してください。');
+    return;
+  }
+
+  const btn = document.getElementById('runBtn');
+  btn.disabled = true;
+  btn.textContent = '処理中...';
+  document.getElementById('tlErrorMsg').classList.remove('visible');
+  document.getElementById('tlResult1').classList.remove('visible');
+  document.getElementById('tlResult2').classList.remove('visible');
+
+  const src = text.substring(0, 4000);
+  const styleMap = {
+    natural: '自然で読みやすい日本語',
+    literary: '文学的で詩的な日本語',
+    literal: '原文に忠実な直訳'
+  };
+
+  try {
+    if (tlMode === 'translate' || tlMode === 'both') {
+      const r1 = document.getElementById('tlResult1');
+      const t1 = document.getElementById('tlResult1Text');
+      document.getElementById('tlResult1Header').innerHTML = '✦ 日本語翻訳 <span class="ai-badge">Gemini</span>';
+      r1.classList.add('visible');
+      t1.innerHTML = loadingHTML('翻訳中...');
+      const result = await callGemini(
+        `次の韓国語テキストを${styleMap[tlStyle]}に翻訳してください。翻訳文のみ返してください。\n\n${src}`,
+        0.5, 2000
+      );
+      t1.textContent = result;
+    }
+
+    if (tlMode === 'explain' || tlMode === 'both') {
+      const r2 = document.getElementById('tlResult2');
+      const t2 = document.getElementById('tlResult2Text');
+      r2.classList.add('visible');
+      t2.innerHTML = loadingHTML('解説中...');
+      const result = await callGemini(
+        `次の韓国語小説テキストについて日本語で文学的な解説をしてください。雰囲気・表現技法・文化的背景・感情効果を含めてください。解説のみ返してください。\n\n${src}`,
+        0.7, 2000
+      );
+      t2.textContent = result;
+    }
+
+    if (tlMode === 'summary') {
+      const r1 = document.getElementById('tlResult1');
+      const t1 = document.getElementById('tlResult1Text');
+      document.getElementById('tlResult1Header').innerHTML = '✦ あらすじ要約 <span class="ai-badge">Gemini</span>';
+      r1.classList.add('visible');
+      t1.innerHTML = loadingHTML('要約中...');
+      const result = await callGemini(
+        `次の韓国小説の内容を日本語で3〜5文で要約してください:\n\n${src}`,
+        0.5, 1000
+      );
+      t1.textContent = result;
+    }
+
+    if (tlMode === 'chars') {
+      const r1 = document.getElementById('tlResult1');
+      const t1 = document.getElementById('tlResult1Text');
+      document.getElementById('tlResult1Header').innerHTML = '✦ 登場人物整理 <span class="ai-badge">Gemini</span>';
+      r1.classList.add('visible');
+      t1.innerHTML = loadingHTML('整理中...');
+      const result = await callGemini(
+        `次の韓国小説テキストから登場人物を日本語でリスト形式で整理してください。名前・役割・特徴を書いてください:\n\n${src}`,
+        0.5, 1000
+      );
+      t1.textContent = result;
+    }
+
+  } catch(e) {
+    showTlError(`エラーが発生しました: ${e.message}`);
+  }
+
+  btn.disabled = false;
+  btn.textContent = '実行する →';
+}
+
+// ── Gemini API ──
+async function callGemini(prompt, temperature=0.7, maxTokens=1500) {
   const res = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`,
     {
@@ -774,12 +1151,24 @@ function showScreen(name) {
   document.getElementById('reader-screen').style.display  = name === 'reader'  ? 'block' : 'none';
 }
 
+function showScreenInternal(name) {
+  document.getElementById('home-screen').style.display    = name === 'home'    ? 'flex'  : 'none';
+  document.getElementById('results-screen').style.display = name === 'results' ? 'block' : 'none';
+  document.getElementById('reader-screen').style.display  = name === 'reader'  ? 'block' : 'none';
+}
+
 function goBack() {
   currentQuery ? showScreen('results') : showScreen('home');
 }
 
-function showError(msg) {
-  const el = document.getElementById('errorMsg');
+function showReaderError(msg) {
+  const el = document.getElementById('readerErrorMsg');
+  el.textContent = msg;
+  el.classList.add('visible');
+}
+
+function showTlError(msg) {
+  const el = document.getElementById('tlErrorMsg');
   el.textContent = msg;
   el.classList.add('visible');
 }
@@ -787,6 +1176,13 @@ function showError(msg) {
 function setAiBtns(disabled) {
   ['btn-translate','btn-explain','btn-summary','btn-chars'].forEach(id => {
     document.getElementById(id).disabled = disabled;
+  });
+}
+
+function copyResult(id) {
+  const text = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    alert('コピーしました！');
   });
 }
 
