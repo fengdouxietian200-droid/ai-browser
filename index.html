@@ -1,4 +1,4 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -11,456 +11,384 @@
 <style>
 :root {
   --bg: #0a0a0f;
-  --surface: #13131a;
-  --surface2: #1c1c26;
-  --border: #2a2a3a;
-  --accent: #7c6aff;
-  --accent2: #ff6a9e;
-  --text: #e8e8f0;
-  --text2: #8888aa;
+  --sur: #13131a;
+  --sur2: #1c1c26;
+  --bdr: #2a2a3a;
+  --acc: #7c6aff;
+  --acc2: #ff6a9e;
+  --tx: #e8e8f0;
+  --tx2: #8888aa;
   --r: 14px;
-  --safe-top: env(safe-area-inset-top, 0px);
-  --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--tx); }
 
-* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-html, body {
-  font-family: 'DM Sans', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  height: 100%;
-  overflow: hidden;
+/* ヘッダー */
+#appHeader {
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  background:rgba(10,10,15,0.97);
+  backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--bdr);
+  padding:10px 14px;
+  padding-top:max(10px, env(safe-area-inset-top));
 }
-
-/* ── ヘッダー ── */
-.header {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
-  background: rgba(10,10,15,0.97);
-  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border);
-  padding: calc(10px + var(--safe-top)) 14px 10px;
-}
-.header-row { display: flex; align-items: center; gap: 10px; }
+.hrow { display:flex; align-items:center; gap:10px; }
 .logo {
-  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  flex-shrink: 0; cursor: pointer;
+  font-family:'Syne',sans-serif; font-weight:800; font-size:20px;
+  background:linear-gradient(135deg,var(--acc),var(--acc2));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  cursor:pointer; flex-shrink:0; user-select:none;
 }
-.search-wrap {
-  flex: 1; display: flex; align-items: center;
-  background: var(--surface2); border: 1px solid var(--border);
-  border-radius: 50px; padding: 0 6px 0 14px; gap: 6px;
+.sbar {
+  flex:1; display:flex; align-items:center;
+  background:var(--sur2); border:1px solid var(--bdr);
+  border-radius:50px; padding:0 6px 0 14px; gap:6px;
 }
-.search-wrap:focus-within { border-color: var(--accent); }
-.search-wrap input {
-  flex: 1; background: none; border: none; outline: none;
-  color: var(--text); font-size: 16px; padding: 9px 0; min-width: 0;
-  font-family: 'DM Sans', sans-serif;
+.sbar input {
+  flex:1; background:none; border:none; outline:none;
+  color:var(--tx); font-size:16px; padding:9px 0; min-width:0;
+  font-family:'DM Sans',sans-serif;
 }
-.search-wrap input::placeholder { color: var(--text2); font-size: 14px; }
-.search-go {
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  border: none; color: white; width: 32px; height: 32px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 14px; cursor: pointer; flex-shrink: 0;
+.sbar input::placeholder { color:var(--tx2); font-size:14px; }
+.sgo {
+  background:linear-gradient(135deg,var(--acc),var(--acc2));
+  border:none; color:white; width:32px; height:32px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:15px; cursor:pointer; flex-shrink:0;
 }
-.search-go:active { transform: scale(0.9); }
 
-/* リーダーヘッダー（別） */
-.reader-header {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
-  background: rgba(10,10,15,0.97);
-  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border);
-  padding: calc(10px + var(--safe-top)) 14px 10px;
-  display: none;
-  align-items: center; gap: 10px;
-}
-.reader-header.show { display: flex; }
-.back-btn {
-  background: var(--surface); border: 1px solid var(--border); color: var(--text);
-  padding: 8px 14px; border-radius: 50px; font-size: 13px;
-  display: flex; align-items: center; gap: 6px; white-space: nowrap; flex-shrink: 0; cursor: pointer;
-}
-.back-btn:active { border-color: var(--accent); }
-.reader-title { flex: 1; font-size: 13px; color: var(--text2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.tl-all-btn {
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  border: none; color: white; padding: 8px 14px; border-radius: 50px;
-  font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap; flex-shrink: 0;
-}
-.tl-all-btn:active { opacity: 0.8; }
-.tl-all-btn:disabled { opacity: 0.4; }
-
-/* ── タブ ── */
-.tabs {
-  position: fixed; z-index: 199;
-  left: 0; right: 0;
-  background: rgba(10,10,15,0.97);
-  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border);
-  display: flex;
+/* タブ */
+#appTabs {
+  position:fixed; left:0; right:0; z-index:99;
+  background:rgba(10,10,15,0.97);
+  backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--bdr);
+  display:flex;
 }
 .tab {
-  flex: 1; padding: 11px 8px; background: none; border: none; color: var(--text2);
-  font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
-  border-bottom: 2px solid transparent; cursor: pointer;
-  display: flex; align-items: center; justify-content: center; gap: 5px;
+  flex:1; padding:12px 8px; background:none; border:none; color:var(--tx2);
+  font-family:'DM Sans',sans-serif; font-size:14px; font-weight:500;
+  border-bottom:2px solid transparent; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; gap:5px;
 }
-.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.tab.on { color:var(--acc); border-bottom-color:var(--acc); }
 
-/* ── スクリーン ── */
-.screen {
-  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-  overflow-y: auto; -webkit-overflow-scrolling: touch;
-  padding-bottom: calc(20px + var(--safe-bottom));
-  display: none;
+/* リーダーヘッダー */
+#readerHeader {
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  background:rgba(10,10,15,0.97);
+  backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--bdr);
+  padding:10px 14px;
+  padding-top:max(10px, env(safe-area-inset-top));
+  display:none;
+  align-items:center; gap:10px;
 }
-.screen.active { display: block; }
+.bbtn {
+  background:var(--sur); border:1px solid var(--bdr); color:var(--tx);
+  padding:8px 14px; border-radius:50px; font-size:13px; cursor:pointer;
+  white-space:nowrap; flex-shrink:0;
+}
+.rtitle { flex:1; font-size:12px; color:var(--tx2); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.tlbtn {
+  background:linear-gradient(135deg,var(--acc),var(--acc2));
+  border:none; color:white; padding:8px 14px; border-radius:50px;
+  font-size:13px; font-weight:500; cursor:pointer; white-space:nowrap; flex-shrink:0;
+}
+.tlbtn:disabled { opacity:0.4; }
 
-/* ── ホーム ── */
-#s-home .inner {
-  padding: 16px 14px;
-}
-.home-hero { text-align: center; padding: 28px 0 20px; }
-.home-title {
-  font-family: 'Syne', sans-serif; font-size: 38px; font-weight: 800;
-  background: linear-gradient(135deg, #fff 20%, var(--accent) 60%, var(--accent2));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  margin-bottom: 6px;
-}
-.home-sub { font-size: 13px; color: var(--text2); }
-.genres { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
-.genre-btn {
-  background: var(--surface); border: 1px solid var(--border); border-radius: var(--r);
-  padding: 16px 8px; text-align: center; cursor: pointer;
-}
-.genre-btn:active { border-color: var(--accent); background: var(--surface2); }
-.genre-btn .icon { font-size: 24px; margin-bottom: 5px; }
-.genre-btn .name { font-size: 12px; color: var(--text2); }
-.tip-box {
-  background: var(--surface); border: 1px solid var(--border); border-radius: var(--r);
-  padding: 14px; font-size: 13px; color: var(--text2); line-height: 1.7;
-}
-.tip-box b { color: var(--accent); }
+/* ページ */
+.page { display:none; padding-bottom:40px; }
+.page.on { display:block; }
 
-/* ── 検索結果 ── */
-#s-results .inner { padding: 16px 14px; }
-.result-count { font-size: 12px; color: var(--text2); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
-.result-count span { background: var(--accent); color: white; font-size: 11px; padding: 2px 7px; border-radius: 4px; }
-.result-card {
-  background: var(--surface); border: 1px solid var(--border); border-radius: var(--r);
-  padding: 14px; margin-bottom: 10px; cursor: pointer;
-  animation: fadeUp 0.3s ease forwards; opacity: 0;
+/* ホーム */
+#pgHome { padding:14px; }
+.hero { text-align:center; padding:28px 0 20px; }
+.htitle {
+  font-family:'Syne',sans-serif; font-size:36px; font-weight:800;
+  background:linear-gradient(135deg,#fff 20%,var(--acc) 60%,var(--acc2));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:6px;
 }
-.result-card:active { background: var(--surface2); border-color: var(--accent); }
-.r-source { font-size: 11px; color: var(--accent); margin-bottom: 4px; }
-.r-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; margin-bottom: 5px; line-height: 1.3; }
-.r-snippet { font-size: 13px; color: var(--text2); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-
-/* ── リーダー ── */
-#s-reader { background: #0e0e16; }
-#s-reader .inner { padding: 16px 14px; }
-.reader-status {
-  text-align: center; padding: 40px 20px; color: var(--text2); font-size: 14px; line-height: 1.8;
+.hsub { font-size:13px; color:var(--tx2); }
+.genres { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:16px; }
+.gbtn {
+  background:var(--sur); border:1px solid var(--bdr); border-radius:var(--r);
+  padding:16px 8px; text-align:center; cursor:pointer;
 }
-.reader-status b { color: var(--accent); }
+.gbtn:active { border-color:var(--acc); background:var(--sur2); }
+.gicon { font-size:24px; margin-bottom:5px; }
+.gname { font-size:12px; color:var(--tx2); }
+.tipbox {
+  background:var(--sur); border:1px solid var(--bdr); border-radius:var(--r);
+  padding:14px; font-size:13px; color:var(--tx2); line-height:1.7;
+}
+.tipbox b { color:var(--acc); }
 
-/* 段落 */
+/* 検索結果 */
+#pgResults { padding:14px; }
+.rcnt { font-size:12px; color:var(--tx2); margin-bottom:12px; display:flex; align-items:center; gap:6px; }
+.rcnt span { background:var(--acc); color:white; font-size:11px; padding:2px 7px; border-radius:4px; }
+.rcard {
+  background:var(--sur); border:1px solid var(--bdr); border-radius:var(--r);
+  padding:14px; margin-bottom:10px; cursor:pointer;
+  animation:fu 0.3s ease forwards; opacity:0;
+}
+.rcard:active { background:var(--sur2); border-color:var(--acc); }
+.rsrc { font-size:11px; color:var(--acc); margin-bottom:4px; }
+.rtit { font-family:'Syne',sans-serif; font-weight:700; font-size:15px; margin-bottom:5px; line-height:1.3; }
+.rsnip { font-size:13px; color:var(--tx2); line-height:1.5; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+
+/* リーダー */
+#pgReader { padding:14px; background:#0e0e16; min-height:100vh; }
 .para-block {
-  margin-bottom: 20px; border-radius: var(--r);
-  transition: background 0.15s;
-  padding: 12px;
-  border: 1px solid transparent;
-  cursor: pointer;
-  user-select: none; -webkit-user-select: none;
+  margin-bottom:18px; padding:12px; border-radius:var(--r);
+  border:1px solid transparent; transition:border-color 0.15s, background 0.15s;
 }
-.para-block.pressing { background: var(--surface2); border-color: var(--accent); }
-.para-block.translated { border-color: rgba(124,106,255,0.3); }
+.para-block.pressing { background:var(--sur2); border-color:var(--acc); }
+.pkr { font-size:17px; line-height:2; color:var(--tx); word-break:break-word; }
+.pjp {
+  font-size:15px; line-height:1.9; color:#c8c8e0;
+  margin-top:10px; padding-top:10px; border-top:1px solid var(--bdr);
+  display:none;
+}
+.para-block.tled .pjp { display:block; }
+.plbl { font-size:10px; color:var(--tx2); margin-bottom:4px; letter-spacing:0.05em; text-transform:uppercase; font-weight:600; }
+.paste-fb {
+  background:var(--sur2); border:1px dashed var(--bdr); border-radius:var(--r);
+  padding:14px; margin-bottom:14px; font-size:13px; color:var(--tx2); line-height:1.7;
+}
+.paste-fb b { color:var(--acc); }
+.ptarea {
+  background:var(--sur); border:1px solid var(--bdr); border-radius:var(--r);
+  padding:0 14px; margin-bottom:12px;
+}
+.ptarea textarea {
+  width:100%; background:none; border:none; outline:none; color:var(--tx);
+  font-size:16px; line-height:1.8; resize:none; min-height:140px; padding:14px 0;
+  font-family:'DM Sans',sans-serif;
+}
+.ptarea textarea::placeholder { color:var(--tx2); font-size:14px; }
 
-.para-kr {
-  font-size: 17px; line-height: 2; color: var(--text);
-  word-break: break-word;
+/* 翻訳タブ */
+#pgTl { padding:14px; }
+.tltit { font-family:'Syne',sans-serif; font-size:22px; font-weight:800; margin-bottom:4px; }
+.tlsub { font-size:13px; color:var(--tx2); margin-bottom:16px; }
+.mpills { display:flex; gap:7px; flex-wrap:wrap; margin-bottom:12px; }
+.mp {
+  padding:8px 14px; border-radius:50px; border:1px solid var(--bdr);
+  background:var(--sur); color:var(--tx2); font-size:13px; cursor:pointer;
 }
-.para-jp {
-  font-size: 15px; line-height: 1.9; color: #c8c8e0;
-  margin-top: 10px; padding-top: 10px;
-  border-top: 1px solid var(--border);
-  display: none;
+.mp.on { background:linear-gradient(135deg,var(--acc),var(--acc2)); border-color:transparent; color:white; font-weight:500; }
+.spills { display:flex; gap:7px; align-items:center; flex-wrap:wrap; margin-bottom:12px; }
+.splbl { font-size:12px; color:var(--tx2); }
+.sp { padding:6px 12px; border-radius:50px; border:1px solid var(--bdr); background:var(--sur); color:var(--tx2); font-size:13px; cursor:pointer; }
+.sp.on { border-color:var(--acc); color:var(--acc); }
+.tbx { background:var(--sur); border:1px solid var(--bdr); border-radius:var(--r); padding:0 14px; margin-bottom:12px; }
+.tbx:focus-within { border-color:var(--acc); }
+.tbx textarea { width:100%; background:none; border:none; outline:none; color:var(--tx); font-size:16px; line-height:1.8; resize:none; min-height:120px; padding:14px 0; font-family:'DM Sans',sans-serif; }
+.tbx textarea::placeholder { color:var(--tx2); font-size:14px; }
+.tfoot { display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--bdr); padding:7px 0 9px; }
+.charc { font-size:11px; color:var(--tx2); }
+.clrt { background:none; border:none; color:var(--tx2); font-size:12px; cursor:pointer; }
+.runbtn {
+  width:100%; padding:14px; border-radius:var(--r); border:none;
+  background:linear-gradient(135deg,var(--acc),var(--acc2));
+  color:white; font-size:15px; font-weight:500; cursor:pointer; margin-bottom:14px;
 }
-.para-block.translated .para-jp { display: block; }
-.para-label {
-  font-size: 10px; color: var(--text2); margin-bottom: 4px; letter-spacing: 0.05em;
-  text-transform: uppercase; font-weight: 600;
-}
-.para-loading { display: flex; align-items: center; gap: 5px; padding: 8px 0; color: var(--text2); font-size: 13px; }
+.runbtn:active { opacity:0.85; }
+.runbtn:disabled { opacity:0.4; }
+.rbox { background:var(--sur); border:1px solid var(--bdr); border-radius:var(--r); padding:16px; display:none; margin-bottom:10px; animation:fu 0.3s ease; }
+.rbox.on { display:block; }
+.rbhead { display:flex; align-items:center; gap:8px; margin-bottom:10px; font-family:'Syne',sans-serif; font-weight:700; font-size:14px; }
+.bdg { background:linear-gradient(135deg,var(--acc),var(--acc2)); color:white; font-size:10px; padding:2px 8px; border-radius:50px; }
+.rbtext { font-size:14px; line-height:1.9; color:var(--tx); white-space:pre-wrap; }
+.cpbtn { margin-top:12px; background:var(--sur2); border:1px solid var(--bdr); color:var(--tx2); padding:7px 14px; border-radius:50px; font-size:12px; cursor:pointer; }
+.errmsg { background:rgba(255,80,80,0.1); border:1px solid rgba(255,80,80,0.3); border-radius:var(--r); padding:12px 14px; color:#ff8888; font-size:13px; margin-bottom:10px; display:none; }
+.errmsg.on { display:block; }
 
-/* 貼り付けフォールバック */
-.paste-fallback {
-  background: var(--surface2); border: 1px dashed var(--border); border-radius: var(--r);
-  padding: 14px; margin-bottom: 16px; font-size: 13px; color: var(--text2); line-height: 1.7;
+/* 汎用ボタン */
+.bigbtn {
+  width:100%; padding:13px; border-radius:var(--r); border:none;
+  background:linear-gradient(135deg,var(--acc),var(--acc2));
+  color:white; font-size:15px; font-weight:500; cursor:pointer; margin-bottom:16px;
 }
-.paste-fallback b { color: var(--accent); }
-.paste-box {
-  background: var(--surface); border: 1px solid var(--border); border-radius: var(--r);
-  padding: 0 14px; margin-bottom: 12px;
-}
-.paste-box:focus-within { border-color: var(--accent); }
-.paste-box textarea {
-  width: 100%; background: none; border: none; outline: none; color: var(--text);
-  font-family: 'DM Sans', sans-serif; font-size: 16px; line-height: 1.8;
-  resize: none; min-height: 140px; padding: 14px 0;
-}
-.paste-box textarea::placeholder { color: var(--text2); font-size: 14px; }
-.parse-btn {
-  width: 100%; padding: 13px; border-radius: var(--r); border: none;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  color: white; font-size: 15px; font-weight: 500; cursor: pointer; margin-bottom: 16px;
-}
-.parse-btn:active { opacity: 0.85; }
+.bigbtn:active { opacity:0.85; }
+.bigbtn:disabled { opacity:0.4; }
 
-/* ── 翻訳タブ ── */
-#s-tl .inner { padding: 16px 14px; }
-.tl-title { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; margin-bottom: 4px; }
-.tl-sub { font-size: 13px; color: var(--text2); margin-bottom: 16px; }
-.mode-pills { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 12px; }
-.mpill {
-  padding: 8px 14px; border-radius: 50px; border: 1px solid var(--border);
-  background: var(--surface); color: var(--text2); font-size: 13px; cursor: pointer;
+/* アクションシート */
+#actSheet {
+  position:fixed; inset:0; z-index:300; background:rgba(0,0,0,0.55);
+  display:none; align-items:flex-end;
 }
-.mpill.active { background: linear-gradient(135deg, var(--accent), var(--accent2)); border-color: transparent; color: white; font-weight: 500; }
-.style-pills { display: flex; gap: 7px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
-.spill-lbl { font-size: 12px; color: var(--text2); }
-.spill {
-  padding: 6px 12px; border-radius: 50px; border: 1px solid var(--border);
-  background: var(--surface); color: var(--text2); font-size: 13px; cursor: pointer;
+#actSheet.on { display:flex; animation:fi 0.2s; }
+.asin {
+  width:100%; background:var(--sur); border-radius:20px 20px 0 0;
+  padding:12px 14px max(20px,env(safe-area-inset-bottom));
+  animation:su 0.25s ease;
 }
-.spill.active { border-color: var(--accent); color: var(--accent); }
-.paste-box2 {
-  background: var(--surface); border: 1px solid var(--border); border-radius: var(--r);
-  padding: 0 14px; margin-bottom: 12px;
-}
-.paste-box2:focus-within { border-color: var(--accent); }
-.paste-box2 textarea {
-  width: 100%; background: none; border: none; outline: none; color: var(--text);
-  font-family: 'DM Sans', sans-serif; font-size: 16px; line-height: 1.8;
-  resize: none; min-height: 120px; padding: 14px 0;
-}
-.paste-box2 textarea::placeholder { color: var(--text2); font-size: 14px; }
-.paste-foot2 { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding: 7px 0 9px; }
-.char-c { font-size: 11px; color: var(--text2); }
-.clear-t { background: none; border: none; color: var(--text2); font-size: 12px; cursor: pointer; }
-.run-btn {
-  width: 100%; padding: 14px; border-radius: var(--r); border: none;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  color: white; font-size: 15px; font-weight: 500; cursor: pointer; margin-bottom: 14px;
-}
-.run-btn:active { opacity: 0.85; transform: scale(0.98); }
-.run-btn:disabled { opacity: 0.4; }
-.result-box {
-  background: var(--surface); border: 1px solid var(--border); border-radius: var(--r);
-  padding: 16px; display: none; margin-bottom: 10px; animation: fadeUp 0.3s ease;
-}
-.result-box.show { display: block; }
-.result-box-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; }
-.badge { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: white; font-size: 10px; padding: 2px 8px; border-radius: 50px; }
-.result-box-text { font-size: 14px; line-height: 1.9; color: var(--text); white-space: pre-wrap; }
-.copy-btn { margin-top: 12px; background: var(--surface2); border: 1px solid var(--border); color: var(--text2); padding: 7px 14px; border-radius: 50px; font-size: 12px; cursor: pointer; }
-.copy-btn:active { border-color: var(--accent); color: var(--accent); }
-.err-msg { background: rgba(255,80,80,0.1); border: 1px solid rgba(255,80,80,0.3); border-radius: var(--r); padding: 12px 14px; color: #ff8888; font-size: 13px; margin-bottom: 10px; display: none; }
-.err-msg.show { display: block; }
+.astit { font-size:12px; color:var(--tx2); text-align:center; margin-bottom:14px; padding-bottom:12px; border-bottom:1px solid var(--bdr); display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.asbtn { width:100%; padding:14px; border-radius:var(--r); border:1px solid var(--bdr); background:var(--sur2); color:var(--tx); font-size:15px; font-weight:500; cursor:pointer; margin-bottom:8px; display:flex; align-items:center; justify-content:center; gap:8px; }
+.asbtn:active { border-color:var(--acc); }
+.asbtn.pri { background:linear-gradient(135deg,var(--acc),var(--acc2)); border-color:transparent; color:white; }
+.ascnl { width:100%; padding:14px; border-radius:var(--r); border:none; background:var(--sur); color:var(--tx2); font-size:15px; cursor:pointer; margin-top:4px; }
 
-/* ── 長押しアクションシート ── */
-.action-backdrop {
-  position: fixed; inset: 0; z-index: 300; background: rgba(0,0,0,0.5);
-  display: none; align-items: flex-end;
+/* 解説ドロワー */
+#drawer {
+  position:fixed; inset:0; z-index:400; background:rgba(0,0,0,0.65);
+  display:none; align-items:flex-end;
 }
-.action-backdrop.show { display: flex; animation: fadeIn 0.2s ease; }
-.action-sheet {
-  width: 100%; background: var(--surface); border-radius: 20px 20px 0 0;
-  padding: 12px 14px calc(20px + var(--safe-bottom));
-  animation: slideUp 0.25s ease;
+#drawer.on { display:flex; animation:fi 0.2s; }
+.dwin {
+  width:100%; background:var(--sur); border-radius:20px 20px 0 0;
+  max-height:75vh; display:flex; flex-direction:column;
+  animation:su 0.25s ease;
 }
-.action-title {
-  font-size: 12px; color: var(--text2); text-align: center;
-  margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--border);
-  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-}
-.action-btn {
-  width: 100%; padding: 14px; border-radius: var(--r); border: 1px solid var(--border);
-  background: var(--surface2); color: var(--text); font-size: 15px; font-weight: 500;
-  cursor: pointer; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 8px;
-}
-.action-btn:active { border-color: var(--accent); }
-.action-btn.primary { background: linear-gradient(135deg, var(--accent), var(--accent2)); border-color: transparent; color: white; }
-.action-cancel { width: 100%; padding: 14px; border-radius: var(--r); border: none; background: var(--surface); color: var(--text2); font-size: 15px; cursor: pointer; margin-top: 4px; }
+.dhdl { width:36px; height:4px; background:var(--bdr); border-radius:2px; margin:12px auto 0; flex-shrink:0; }
+.dhead { padding:14px 16px 12px; border-bottom:1px solid var(--bdr); flex-shrink:0; display:flex; align-items:center; justify-content:space-between; }
+.dhtit { font-family:'Syne',sans-serif; font-weight:700; font-size:15px; display:flex; align-items:center; gap:8px; }
+.dclose { background:var(--sur2); border:none; color:var(--tx2); width:28px; height:28px; border-radius:50%; font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.dorig { padding:12px 16px; font-size:13px; color:var(--tx2); background:var(--sur2); border-bottom:1px solid var(--bdr); line-height:1.6; flex-shrink:0; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+.dbody { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:16px; }
+.dtxt { font-size:14px; line-height:1.9; color:var(--tx); white-space:pre-wrap; }
+.dcpy { margin-top:14px; width:100%; padding:10px; border-radius:var(--r); border:1px solid var(--bdr); background:var(--sur2); color:var(--tx2); font-size:13px; cursor:pointer; }
 
-/* ── 解説ドロワー ── */
-.drawer-backdrop {
-  position: fixed; inset: 0; z-index: 400; background: rgba(0,0,0,0.6);
-  display: none; align-items: flex-end;
-}
-.drawer-backdrop.show { display: flex; animation: fadeIn 0.2s ease; }
-.drawer {
-  width: 100%; background: var(--surface); border-radius: 20px 20px 0 0;
-  max-height: 75vh; display: flex; flex-direction: column;
-  animation: slideUp 0.25s ease;
-}
-.drawer-handle { width: 36px; height: 4px; background: var(--border); border-radius: 2px; margin: 12px auto 0; flex-shrink: 0; }
-.drawer-head {
-  padding: 14px 16px 12px; border-bottom: 1px solid var(--border); flex-shrink: 0;
-  display: flex; align-items: center; justify-content: space-between;
-}
-.drawer-head-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 8px; }
-.drawer-close { background: var(--surface2); border: none; color: var(--text2); width: 28px; height: 28px; border-radius: 50%; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-.drawer-orig { padding: 12px 16px; font-size: 13px; color: var(--text2); background: var(--surface2); border-bottom: 1px solid var(--border); line-height: 1.6; flex-shrink: 0; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-.drawer-body { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 16px; }
-.drawer-text { font-size: 14px; line-height: 1.9; color: var(--text); white-space: pre-wrap; }
-.drawer-copy { margin-top: 16px; width: 100%; padding: 11px; border-radius: var(--r); border: 1px solid var(--border); background: var(--surface2); color: var(--text2); font-size: 13px; cursor: pointer; }
+/* ローディング */
+.ld { display:flex; align-items:center; justify-content:center; gap:6px; padding:20px; color:var(--tx2); font-size:13px; }
+.d { width:6px; height:6px; border-radius:50%; background:var(--acc); animation:b 0.8s infinite; }
+.d:nth-child(2) { animation-delay:0.15s; }
+.d:nth-child(3) { animation-delay:0.3s; }
 
-/* ── ローディング ── */
-.ld { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 20px; color: var(--text2); font-size: 13px; }
-.d { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: b 0.8s infinite; }
-.d:nth-child(2) { animation-delay: 0.15s; }
-.d:nth-child(3) { animation-delay: 0.3s; }
-
-@keyframes b { 0%,80%,100% { transform: scale(0.6); opacity: 0.3; } 40% { transform: scale(1); opacity: 1; } }
-@keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes b { 0%,80%,100%{transform:scale(0.6);opacity:0.3;}40%{transform:scale(1);opacity:1;} }
+@keyframes fu { from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);} }
+@keyframes fi { from{opacity:0;}to{opacity:1;} }
+@keyframes su { from{transform:translateY(100%);}to{transform:translateY(0);} }
 </style>
 </head>
 <body>
 
 <!-- 通常ヘッダー -->
-<header class="header" id="mainHeader">
-  <div class="header-row">
-    <div class="logo" onclick="goHome()">AI✦</div>
-    <div class="search-wrap">
-      <input type="text" id="searchInput" placeholder="小説タイトル・ジャンルを検索..." autocomplete="off" inputmode="search" />
-      <button class="search-go" onclick="doSearch()">→</button>
+<div id="appHeader">
+  <div class="hrow">
+    <div class="logo" id="logoBtn">AI✦</div>
+    <div class="sbar">
+      <input type="text" id="SI" placeholder="小説タイトル・ジャンルを検索..." autocomplete="off" />
+      <button class="sgo" id="searchBtn">→</button>
     </div>
   </div>
-</header>
+</div>
+
+<!-- タブ -->
+<div id="appTabs">
+  <button class="tab on" id="tabHome">🏠 ホーム</button>
+  <button class="tab" id="tabTl">🌐 翻訳・解説</button>
+</div>
 
 <!-- リーダーヘッダー -->
-<header class="reader-header" id="readerHeader">
-  <button class="back-btn" onclick="exitReader()">← 戻る</button>
-  <div class="reader-title" id="readerTitle"></div>
-  <button class="tl-all-btn" id="tlAllBtn" onclick="translateAll()">全翻訳</button>
-</header>
+<div id="readerHeader">
+  <button class="bbtn" id="backBtn">← 戻る</button>
+  <div class="rtitle" id="readerTitle"></div>
+  <button class="tlbtn" id="tlAllBtn">🌐 全文翻訳</button>
+</div>
 
-<!-- タブ（リーダー以外） -->
-<nav class="tabs" id="mainTabs" style="top:57px">
-  <button class="tab active" id="tab-home" onclick="switchTab('home')">🏠 ホーム</button>
-  <button class="tab" id="tab-tl" onclick="switchTab('tl')">🌐 翻訳・解説</button>
-</nav>
+<!-- コンテンツ -->
+<div id="mainWrap">
 
-<!-- ホーム -->
-<div class="screen active" id="s-home" style="padding-top:calc(57px + 45px + var(--safe-top, 0px))">
-  <div class="inner">
-    <div class="home-hero">
-      <div class="home-title">AI Reader</div>
-      <div class="home-sub">韓国小説を検索・読む・翻訳・AI解説</div>
+  <!-- ホーム -->
+  <div class="page on" id="pgHome">
+    <div class="hero">
+      <div class="htitle">AI Reader</div>
+      <div class="hsub">韓国小説を検索・読む・翻訳・AI解説</div>
     </div>
     <div class="genres">
-      <div class="genre-btn" onclick="quickSearch('munpia 판타지 소설')"><div class="icon">⚔️</div><div class="name">판타지</div></div>
-      <div class="genre-btn" onclick="quickSearch('munpia 로맨스 소설')"><div class="icon">💕</div><div class="name">로맨스</div></div>
-      <div class="genre-btn" onclick="quickSearch('munpia 무협 소설')"><div class="icon">🥷</div><div class="name">무협</div></div>
-      <div class="genre-btn" onclick="quickSearch('munpia 인기 소설 추천')"><div class="icon">🔥</div><div class="name">인기</div></div>
-      <div class="genre-btn" onclick="quickSearch('munpia 최신 소설')"><div class="icon">🆕</div><div class="name">최신</div></div>
-      <div class="genre-btn" onclick="quickSearch('munpia 소설 추천')"><div class="icon">📖</div><div class="name">Munpia</div></div>
+      <div class="gbtn" data-q="munpia 판타지 소설"><div class="gicon">⚔️</div><div class="gname">판타지</div></div>
+      <div class="gbtn" data-q="munpia 로맨스 소설"><div class="gicon">💕</div><div class="gname">로맨스</div></div>
+      <div class="gbtn" data-q="munpia 무협 소설"><div class="gicon">🥷</div><div class="gname">무협</div></div>
+      <div class="gbtn" data-q="munpia 인기 소설"><div class="gicon">🔥</div><div class="gname">인기</div></div>
+      <div class="gbtn" data-q="munpia 최신 소설"><div class="gicon">🆕</div><div class="gname">최신</div></div>
+      <div class="gbtn" data-q="munpia 소설 추천"><div class="gicon">📖</div><div class="gname">Munpia</div></div>
     </div>
-    <div class="tip-box">
+    <div class="tipbox">
       💡 <b>使い方</b><br>
       ① ジャンルや検索で小説を探す<br>
       ② 候補をタップ → ページを自動取得<br>
-      ③ 段落を<b>タップ</b>で翻訳、<b>長押し</b>でAI解説
+      ③「🌐 全文翻訳」ボタンで一括翻訳<br>
+      ④ 段落を<b>長押し</b>でAI解説
     </div>
   </div>
-</div>
 
-<!-- 検索結果 -->
-<div class="screen" id="s-results" style="padding-top:calc(57px + 45px + var(--safe-top, 0px))">
-  <div class="inner">
-    <div class="result-count"><span id="rCount">0</span> 件の結果</div>
+  <!-- 検索結果 -->
+  <div class="page" id="pgResults">
+    <div class="rcnt"><span id="rCount">0</span> 件の結果</div>
     <div id="rList"></div>
   </div>
-</div>
 
-<!-- リーダー -->
-<div class="screen" id="s-reader" style="padding-top:calc(57px + var(--safe-top, 0px))">
-  <div class="inner" id="readerContent">
-    <div class="reader-status">
-      <div class="ld"><div class="d"></div><div class="d"></div><div class="d"></div><span style="margin-left:6px">ページを取得中...</span></div>
-    </div>
+  <!-- リーダー -->
+  <div class="page" id="pgReader">
+    <div id="readerContent"></div>
   </div>
-</div>
 
-<!-- 翻訳タブ -->
-<div class="screen" id="s-tl" style="padding-top:calc(57px + 45px + var(--safe-top, 0px))">
-  <div class="inner">
-    <div class="tl-title">翻訳 & AI解説</div>
-    <div class="tl-sub">韓国語テキストを貼り付けてAI翻訳・解説</div>
-    <div class="mode-pills">
-      <button class="mpill active" onclick="setMode(this,'translate')">🌐 翻訳</button>
-      <button class="mpill" onclick="setMode(this,'explain')">📖 文学解説</button>
-      <button class="mpill" onclick="setMode(this,'summary')">📝 要約</button>
-      <button class="mpill" onclick="setMode(this,'chars')">👥 登場人物</button>
-      <button class="mpill" onclick="setMode(this,'both')">🌐+📖 両方</button>
+  <!-- 翻訳タブ -->
+  <div class="page" id="pgTl">
+    <div class="tltit">翻訳 & AI解説</div>
+    <div class="tlsub">韓国語テキストを貼り付けてAI翻訳・解説</div>
+    <div class="mpills">
+      <button class="mp on" data-mode="translate">🌐 翻訳</button>
+      <button class="mp" data-mode="explain">📖 文学解説</button>
+      <button class="mp" data-mode="summary">📝 要約</button>
+      <button class="mp" data-mode="chars">👥 登場人物</button>
+      <button class="mp" data-mode="both">🌐+📖 両方</button>
     </div>
-    <div class="style-pills" id="stylePills">
-      <span class="spill-lbl">スタイル：</span>
-      <button class="spill active" onclick="setStyle(this,'natural')">自然</button>
-      <button class="spill" onclick="setStyle(this,'literary')">文学的</button>
-      <button class="spill" onclick="setStyle(this,'literal')">直訳</button>
+    <div class="spills" id="spills">
+      <span class="splbl">スタイル：</span>
+      <button class="sp on" data-sty="natural">自然</button>
+      <button class="sp" data-sty="literary">文学的</button>
+      <button class="sp" data-sty="literal">直訳</button>
     </div>
-    <div class="paste-box2">
-      <textarea id="tlText" placeholder="ここに韓国語を貼り付け..." oninput="tlCount()"></textarea>
-      <div class="paste-foot2">
-        <span class="char-c" id="tlCharC">0 文字</span>
-        <button class="clear-t" onclick="tlClear()">クリア</button>
+    <div class="tbx">
+      <textarea id="tlText" placeholder="ここに韓国語を貼り付け..."></textarea>
+      <div class="tfoot">
+        <span class="charc" id="tlCharC">0 文字</span>
+        <button class="clrt" id="tlClearBtn">クリア</button>
       </div>
     </div>
-    <button class="run-btn" id="runBtn" onclick="runTl()">実行する →</button>
-    <div class="err-msg" id="tlErr"></div>
-    <div class="result-box" id="tlBox1">
-      <div class="result-box-head" id="tlBox1Head">✦ 日本語翻訳 <span class="badge">AI</span></div>
-      <div class="result-box-text" id="tlBox1Text"></div>
-      <button class="copy-btn" onclick="cp('tlBox1Text')">📋 コピー</button>
+    <button class="runbtn" id="runBtn">実行する →</button>
+    <div class="errmsg" id="tlErr"></div>
+    <div class="rbox" id="tlBox1">
+      <div class="rbhead" id="tlBox1Head">✦ 日本語翻訳 <span class="bdg">AI</span></div>
+      <div class="rbtext" id="tlBox1Text"></div>
+      <button class="cpbtn" data-cp="tlBox1Text">📋 コピー</button>
     </div>
-    <div class="result-box" id="tlBox2">
-      <div class="result-box-head">✦ AI文学解説 <span class="badge">AI</span></div>
-      <div class="result-box-text" id="tlBox2Text"></div>
-      <button class="copy-btn" onclick="cp('tlBox2Text')">📋 コピー</button>
+    <div class="rbox" id="tlBox2">
+      <div class="rbhead">✦ AI文学解説 <span class="bdg">AI</span></div>
+      <div class="rbtext" id="tlBox2Text"></div>
+      <button class="cpbtn" data-cp="tlBox2Text">📋 コピー</button>
     </div>
   </div>
-</div>
 
-<!-- 長押しアクションシート -->
-<div class="action-backdrop" id="actionBackdrop" onclick="closeAction()">
-  <div class="action-sheet" onclick="e=>e.stopPropagation()">
-    <div class="action-title" id="actionTitle"></div>
-    <button class="action-btn primary" onclick="doTranslatePara()">🌐 この段落を翻訳</button>
-    <button class="action-btn" onclick="doExplainPara()">🔍 AI解説（文化・歴史・語彙）</button>
-    <button class="action-cancel" onclick="closeAction()">キャンセル</button>
+</div><!-- /mainWrap -->
+
+<!-- アクションシート -->
+<div id="actSheet">
+  <div class="asin">
+    <div class="astit" id="actTitle"></div>
+    <button class="asbtn pri" id="actTlBtn">🌐 この段落を翻訳</button>
+    <button class="asbtn" id="actExBtn">🔍 AI解説（文化・歴史・語彙）</button>
+    <button class="ascnl" id="actCnl">キャンセル</button>
   </div>
 </div>
 
 <!-- 解説ドロワー -->
-<div class="drawer-backdrop" id="drawerBackdrop" onclick="closeDrawer()">
-  <div class="drawer" onclick="e=>e.stopPropagation()">
-    <div class="drawer-handle"></div>
-    <div class="drawer-head">
-      <div class="drawer-head-title">🔍 AI解説 <span class="badge">AI</span></div>
-      <button class="drawer-close" onclick="closeDrawer()">✕</button>
+<div id="drawer">
+  <div class="dwin">
+    <div class="dhdl"></div>
+    <div class="dhead">
+      <div class="dhtit">🔍 AI解説 <span class="bdg">AI</span></div>
+      <button class="dclose" id="drawerClose">✕</button>
     </div>
-    <div class="drawer-orig" id="drawerOrig"></div>
-    <div class="drawer-body">
-      <div class="drawer-text" id="drawerText"></div>
-      <button class="drawer-copy" onclick="cp('drawerText')">📋 コピー</button>
+    <div class="dorig" id="drawerOrig"></div>
+    <div class="dbody">
+      <div class="dtxt" id="drawerText"></div>
+      <button class="dcpy" data-cp="drawerText">📋 コピー</button>
     </div>
   </div>
 </div>
@@ -468,20 +396,34 @@ html, body {
 <script>
 // ── 状態 ──
 let curQuery = '';
-let curParas = [];        // 段落テキスト配列
-let selectedParaIdx = -1; // 長押しされた段落インデックス
+let curParas = [];
+let selParaIdx = -1;
+let curTitle = '';
 let pressTimer = null;
 let tlMode = 'translate';
 let tlStyle = 'natural';
-let isReaderMode = false;
-let curTitle = '';
+
+// ── レイアウト計算 ──
+function calcHeaderHeight() {
+  const h = document.getElementById('appHeader').getBoundingClientRect().height;
+  const t = document.getElementById('appTabs').getBoundingClientRect().height;
+  return h + t;
+}
+function calcReaderHeaderHeight() {
+  return document.getElementById('readerHeader').getBoundingClientRect().height;
+}
+function adjustLayout() {
+  const hh = calcHeaderHeight();
+  document.getElementById('appTabs').style.top = document.getElementById('appHeader').getBoundingClientRect().height + 'px';
+  document.getElementById('mainWrap').style.paddingTop = hh + 'px';
+}
 
 // ── API ──
-async function callAI(prompt, temp = 0.7, max = 2000, useSearch = false) {
+async function callAI(prompt, temp=0.7, max=2000, useSearch=false) {
   const res = await fetch('/api/gemini', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ prompt, temperature: temp, maxTokens: max, useSearch })
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({prompt, temperature:temp, maxTokens:max, useSearch})
   });
   const d = await res.json();
   if (d.error) throw new Error(d.error);
@@ -489,57 +431,71 @@ async function callAI(prompt, temp = 0.7, max = 2000, useSearch = false) {
 }
 
 // ── 画面切り替え ──
-function showScreen(name) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('s-' + name).classList.add('active');
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
+  document.getElementById('pg' + name).classList.add('on');
   window.scrollTo(0, 0);
 }
 
-function setReaderMode(on) {
-  isReaderMode = on;
-  document.getElementById('mainHeader').style.display = on ? 'none' : '';
-  document.getElementById('readerHeader').classList.toggle('show', on);
-  document.getElementById('mainTabs').style.display = on ? 'none' : '';
-  if (on) showScreen('reader');
-}
-
-function switchTab(tab) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('tab-' + tab).classList.add('active');
-  if (tab === 'tl') {
-    showScreen('tl');
+function setReader(on) {
+  document.getElementById('appHeader').style.display = on ? 'none' : '';
+  document.getElementById('appTabs').style.display = on ? 'none' : '';
+  document.getElementById('readerHeader').style.display = on ? 'flex' : 'none';
+  if (on) {
+    const rh = calcReaderHeaderHeight();
+    document.getElementById('mainWrap').style.paddingTop = rh + 'px';
+    showPage('Reader');
   } else {
-    if (curQuery && document.getElementById('rList').children.length > 0) showScreen('results');
-    else showScreen('home');
+    adjustLayout();
   }
 }
 
-// ── 検索 ──
-const si = document.getElementById('searchInput');
-si.addEventListener('keydown', e => { if (e.key === 'Enter') { si.blur(); doSearch(); } });
+// ── タブ ──
+document.getElementById('tabHome').onclick = () => {
+  document.getElementById('tabHome').classList.add('on');
+  document.getElementById('tabTl').classList.remove('on');
+  if (curQuery && document.getElementById('rList').children.length > 0) showPage('Results');
+  else showPage('Home');
+};
+document.getElementById('tabTl').onclick = () => {
+  document.getElementById('tabTl').classList.add('on');
+  document.getElementById('tabHome').classList.remove('on');
+  showPage('Tl');
+};
+document.getElementById('logoBtn').onclick = () => {
+  curQuery = '';
+  document.getElementById('SI').value = '';
+  setReader(false);
+  showPage('Home');
+  document.getElementById('tabHome').classList.add('on');
+  document.getElementById('tabTl').classList.remove('on');
+};
 
-function quickSearch(q) { si.value = q; doSearch(); }
+// ── 検索 ──
+document.getElementById('SI').addEventListener('keydown', e => {
+  if (e.key === 'Enter') { document.getElementById('SI').blur(); doSearch(); }
+});
+document.getElementById('searchBtn').addEventListener('click', doSearch);
+
+// ジャンルボタン
+document.querySelectorAll('.gbtn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.getElementById('SI').value = btn.dataset.q;
+    doSearch();
+  });
+});
 
 function doSearch() {
-  const val = si.value.trim();
+  const val = document.getElementById('SI').value.trim();
   if (!val) return;
   curQuery = val;
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('tab-home').classList.add('active');
-  showScreen('results');
-  fetchSearchResults(val);
+  document.getElementById('tabHome').classList.add('on');
+  document.getElementById('tabTl').classList.remove('on');
+  showPage('Results');
+  fetchResults(val);
 }
 
-function goHome() {
-  curQuery = '';
-  si.value = '';
-  setReaderMode(false);
-  showScreen('home');
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('tab-home').classList.add('active');
-}
-
-async function fetchSearchResults(query) {
+async function fetchResults(query) {
   const list = document.getElementById('rList');
   list.innerHTML = ld('検索中...');
   try {
@@ -553,14 +509,14 @@ JSON配列のみ。`;
     list.innerHTML = '';
     results.forEach((r, i) => {
       const el = document.createElement('div');
-      el.className = 'result-card';
+      el.className = 'rcard';
       el.style.animationDelay = i * 0.05 + 's';
-      el.innerHTML = `<div class="r-source">🔗 ${esc(r.source||'munpia.com')}</div><div class="r-title">${esc(r.title)}</div><div class="r-snippet">${esc(r.snippet)}</div>`;
-      el.onclick = () => openReader(r.url, r.title);
+      el.innerHTML = `<div class="rsrc">🔗 ${esc(r.source||'munpia.com')}</div><div class="rtit">${esc(r.title)}</div><div class="rsnip">${esc(r.snippet)}</div>`;
+      el.addEventListener('click', () => openReader(r.url, r.title));
       list.appendChild(el);
     });
   } catch(e) {
-    list.innerHTML = `<div class="err-msg show">検索エラー: ${e.message}</div>`;
+    list.innerHTML = `<div class="errmsg on">検索エラー: ${e.message}</div>`;
   }
 }
 
@@ -571,7 +527,8 @@ async function openReader(url, title='') {
   document.getElementById('readerTitle').textContent = curTitle;
   document.getElementById('readerContent').innerHTML = ld('ページを取得中...');
   document.getElementById('tlAllBtn').disabled = true;
-  setReaderMode(true);
+  document.getElementById('tlAllBtn').textContent = '🌐 全文翻訳';
+  setReader(true);
 
   try {
     const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
@@ -579,11 +536,10 @@ async function openReader(url, title='') {
     const data = await res.json();
     if (!data.contents) throw new Error('取得失敗');
     const text = extractText(data.contents);
-    if (text.length < 50) throw new Error('テキストが短すぎます');
+    if (text.length < 50) throw new Error('テキスト不足');
     renderReader(text);
   } catch(e) {
-    // フォールバック：貼り付け
-    renderPasteFallback(url);
+    renderFallback(url);
   }
 }
 
@@ -596,877 +552,229 @@ function extractText(html) {
   const sels = ['.novel_view','.view-content','#novel_content','.chapter-content','article','main','[role="main"]','.content','#content'];
   for (const sel of sels) {
     const el = doc.querySelector(sel);
-    if (el && el.textContent.trim().length > 100) return el.textContent.trim().substring(0, 15000);
+    if (el && el.textContent.trim().length > 100) return el.textContent.trim().substring(0,15000);
   }
-  return (doc.body?.textContent || '').trim().substring(0, 15000);
+  return (doc.body?.textContent||'').trim().substring(0,15000);
 }
 
 function renderReader(text) {
-  // 段落に分割
-  const paras = text.split(/\n{2,}|\n/).map(p => p.trim()).filter(p => p.length > 10);
+  const paras = text.split(/\n{2,}|\n/).map(p=>p.trim()).filter(p=>p.length>10);
   curParas = paras;
   document.getElementById('tlAllBtn').disabled = false;
 
-  const content = document.getElementById('readerContent');
-
-  // 翻訳開始ボタン
-  const startBtn = document.createElement('button');
-  startBtn.className = 'parse-btn';
-  startBtn.textContent = '🌐 全文翻訳を開始する';
-  startBtn.style.marginBottom = '20px';
-  startBtn.onclick = () => startTranslateAll(paras, startBtn);
-  content.appendChild(startBtn);
+  const c = document.getElementById('readerContent');
+  c.innerHTML = '';
 
   // ヒント
   const hint = document.createElement('p');
-  hint.style.cssText = 'font-size:12px;color:var(--text2);margin-bottom:16px;line-height:1.6;';
-  hint.innerHTML = '💡 翻訳後、<b style="color:var(--accent)">長押し</b>でAI解説';
-  content.appendChild(hint);
+  hint.style.cssText = 'font-size:12px;color:var(--tx2);margin-bottom:14px;line-height:1.6;padding:0 2px;';
+  hint.innerHTML = '💡 上の「<b style="color:var(--acc)">全文翻訳</b>」で一括翻訳 ／ 段落を<b style="color:var(--acc)">長押し</b>でAI解説';
+  c.appendChild(hint);
 
-  // 段落表示
   paras.forEach((para, i) => {
     const block = document.createElement('div');
     block.className = 'para-block';
     block.dataset.idx = i;
-    block.innerHTML = `<div class="para-kr">${esc(para)}</div><div class="para-jp" id="jp-${i}"></div>`;
+    block.innerHTML = `<div class="pkr">${esc(para)}</div><div class="pjp" id="jp-${i}"></div>`;
 
-    // 長押し → AI解説
     block.addEventListener('touchstart', () => {
-      pressTimer = setTimeout(() => showAction(i, para), 600);
+      pressTimer = setTimeout(() => openAction(i, para), 600);
       block.classList.add('pressing');
-    }, { passive: true });
+    }, {passive:true});
     block.addEventListener('touchend', () => {
       clearTimeout(pressTimer);
       block.classList.remove('pressing');
-    }, { passive: true });
+    }, {passive:true});
     block.addEventListener('touchmove', () => {
       clearTimeout(pressTimer);
       block.classList.remove('pressing');
-    }, { passive: true });
+    }, {passive:true});
 
-    content.appendChild(block);
+    c.appendChild(block);
   });
 }
 
-// 全文翻訳実行
-async function startTranslateAll(paras, btn) {
-  btn.disabled = true;
-  btn.textContent = '翻訳中...';
-  document.getElementById('tlAllBtn').disabled = true;
-
-  for (let i = 0; i < paras.length; i++) {
-    const jpEl = document.getElementById(`jp-${i}`);
-    const block = document.querySelector(`.para-block[data-idx="${i}"]`);
-    if (!jpEl) continue;
-
-    jpEl.innerHTML = `<div class="para-label">日本語</div>` + ld('翻訳中...');
-    block.classList.add('translated');
-
-    try {
-      const result = await callAI(
-        `以下の韓国語を自然な日本語に翻訳してください。翻訳文のみ返してください:\n\n${paras[i]}`,
-        0.5, 600
-      );
-      jpEl.innerHTML = `<div class="para-label">日本語</div><div>${esc(result)}</div>`;
-    } catch(e) {
-      jpEl.innerHTML = `<div style="color:#ff8888;font-size:13px;">翻訳エラー</div>`;
-    }
-  }
-
-  btn.textContent = '✅ 翻訳完了';
-  document.getElementById('tlAllBtn').textContent = '翻訳完了';
+function renderFallback(url) {
+  const c = document.getElementById('readerContent');
+  c.innerHTML = `
+    <div class="paste-fb">⚠️ ページを直接取得できませんでした。<br><b>Safariで開いてテキストをコピー → 下に貼り付け</b></div>
+    <div class="ptarea"><textarea id="fbText" placeholder="ここに韓国語テキストを貼り付け..." rows="8"></textarea></div>
+    <button class="bigbtn" id="fbBtn">読み込む →</button>`;
+  document.getElementById('fbBtn').addEventListener('click', () => {
+    const t = document.getElementById('fbText')?.value?.trim();
+    if (t) renderReader(t);
+  });
 }
 
-function renderPasteFallback(url) {
-  const content = document.getElementById('readerContent');
-  content.innerHTML = `
-    <div class="paste-fallback">
-      ⚠️ ページを直接取得できませんでした。<br>
-      <b>${esc(url)}</b> をSafariで開き、テキストをコピーして下に貼り付けてください。
-    </div>
-    <div class="paste-box">
-      <textarea id="fallbackText" placeholder="ここに韓国語テキストを貼り付け..." rows="8"></textarea>
-    </div>
-    <button class="parse-btn" onclick="parsePastedText()">読み込む →</button>
-  `;
-}
-
-function parsePastedText() {
-  const text = document.getElementById('fallbackText')?.value?.trim();
-  if (!text) return;
-  renderReader(text);
-}
-
-// ── 段落翻訳 ──
-async function translatePara(idx) {
-  const block = document.querySelector(`.para-block[data-idx="${idx}"]`);
-  if (!block || block.classList.contains('translated')) return;
-
-  const jpEl = block.querySelector('.para-jp');
-  jpEl.innerHTML = `<div class="para-label">日本語</div>` + ld('翻訳中...');
-  block.classList.add('translated');
-
-  try {
-    const result = await callAI(
-      `以下の韓国語を自然な日本語に翻訳してください。翻訳文のみ返してください:\n\n${curParas[idx]}`,
-      0.5, 800
-    );
-    jpEl.innerHTML = `<div class="para-label">日本語</div><div>${esc(result)}</div>`;
-  } catch(e) {
-    jpEl.innerHTML = `<div style="color:#ff8888;font-size:13px;">翻訳エラー: ${e.message}</div>`;
-  }
-}
-
-// ── 全翻訳 ──
-async function translateAll() {
+// ── 全文翻訳ボタン ──
+document.getElementById('tlAllBtn').addEventListener('click', async () => {
   const btn = document.getElementById('tlAllBtn');
   btn.disabled = true; btn.textContent = '翻訳中...';
   for (let i = 0; i < curParas.length; i++) {
     const block = document.querySelector(`.para-block[data-idx="${i}"]`);
-    if (block && !block.classList.contains('translated')) {
-      await translatePara(i);
-    }
+    if (!block || block.classList.contains('tled')) continue;
+    await translatePara(i);
   }
-  btn.disabled = false; btn.textContent = '全翻訳';
-}
+  btn.textContent = '✅ 翻訳完了';
+});
 
-// ── アクションシート（長押し） ──
-function showAction(idx, para) {
-  selectedParaIdx = idx;
-  document.getElementById('actionTitle').textContent = para.substring(0, 80) + (para.length > 80 ? '...' : '');
-  document.getElementById('actionBackdrop').classList.add('show');
-}
+document.getElementById('backBtn').addEventListener('click', () => {
+  setReader(false);
+  if (curQuery && document.getElementById('rList').children.length > 0) showPage('Results');
+  else showPage('Home');
+});
 
-function closeAction() {
-  document.getElementById('actionBackdrop').classList.remove('show');
-}
+// ── 段落翻訳 ──
+async function translatePara(idx) {
+  const block = document.querySelector(`.para-block[data-idx="${idx}"]`);
+  const jpEl = document.getElementById(`jp-${idx}`);
+  if (!block || !jpEl || block.classList.contains('tled')) return;
 
-function doTranslatePara() {
-  closeAction();
-  if (selectedParaIdx >= 0) {
-    const block = document.querySelector(`.para-block[data-idx="${selectedParaIdx}"]`);
-    if (block) block.classList.remove('translated'); // 再翻訳
-    translatePara(selectedParaIdx);
-  }
-}
-
-async function doExplainPara() {
-  closeAction();
-  if (selectedParaIdx < 0) return;
-  const para = curParas[selectedParaIdx];
-
-  // ドロワーを開く
-  document.getElementById('drawerOrig').textContent = para;
-  document.getElementById('drawerText').innerHTML = ld('解説中...');
-  document.getElementById('drawerBackdrop').classList.add('show');
+  block.classList.add('tled');
+  jpEl.innerHTML = `<div class="plbl">日本語</div>` + ld('翻訳中...');
 
   try {
-    const prompt = `以下は韓国小説「${curTitle}」の一節です。日本語で詳しく解説してください。
-解説に含める内容：
-- 難しい韓国語の語彙・表現の説明
-- 文化的・歴史的背景
-- 登場人物の感情や状況
-- この場面の意味・重要性
+    const result = await callAI(
+      `以下の韓国語を自然な日本語に翻訳してください。翻訳文のみ返してください:\n\n${curParas[idx]}`,
+      0.5, 600
+    );
+    jpEl.innerHTML = `<div class="plbl">日本語</div><div>${esc(result)}</div>`;
+  } catch(e) {
+    jpEl.innerHTML = `<div style="color:#ff8888;font-size:13px;">翻訳エラー</div>`;
+  }
+}
 
-一節:
-${para}`;
-    const result = await callAI(prompt, 0.7, 1500, true);
+// ── アクションシート ──
+function openAction(idx, para) {
+  selParaIdx = idx;
+  document.getElementById('actTitle').textContent = para.substring(0,80) + (para.length>80?'...':'');
+  document.getElementById('actSheet').classList.add('on');
+}
+function closeAction() { document.getElementById('actSheet').classList.remove('on'); }
+
+document.getElementById('actSheet').addEventListener('click', e => {
+  if (e.target === document.getElementById('actSheet')) closeAction();
+});
+document.getElementById('actCnl').addEventListener('click', closeAction);
+
+document.getElementById('actTlBtn').addEventListener('click', () => {
+  closeAction();
+  if (selParaIdx >= 0) {
+    const block = document.querySelector(`.para-block[data-idx="${selParaIdx}"]`);
+    if (block) block.classList.remove('tled');
+    translatePara(selParaIdx);
+  }
+});
+
+document.getElementById('actExBtn').addEventListener('click', async () => {
+  closeAction();
+  if (selParaIdx < 0) return;
+  const para = curParas[selParaIdx];
+  document.getElementById('drawerOrig').textContent = para;
+  document.getElementById('drawerText').innerHTML = ld('解説中...');
+  document.getElementById('drawer').classList.add('on');
+  try {
+    const result = await callAI(
+      `以下は韓国小説「${curTitle}」の一節です。日本語で詳しく解説してください。\n含める内容：語彙・表現の説明、文化的・歴史的背景、登場人物の感情、場面の重要性\n\n一節:\n${para}`,
+      0.7, 1500, true
+    );
     document.getElementById('drawerText').textContent = result;
   } catch(e) {
     document.getElementById('drawerText').textContent = `エラー: ${e.message}`;
   }
-}
+});
 
-function closeDrawer() {
-  document.getElementById('drawerBackdrop').classList.remove('show');
-}
-
-function exitReader() {
-  setReaderMode(false);
-  curParas = [];
-  if (curQuery && document.getElementById('rList').children.length > 0) showScreen('results');
-  else showScreen('home');
-}
+// ── 解説ドロワー ──
+document.getElementById('drawer').addEventListener('click', e => {
+  if (e.target === document.getElementById('drawer')) document.getElementById('drawer').classList.remove('on');
+});
+document.getElementById('drawerClose').addEventListener('click', () => document.getElementById('drawer').classList.remove('on'));
 
 // ── 翻訳タブ ──
-function setMode(btn, mode) {
-  tlMode = mode;
-  document.querySelectorAll('.mpill').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('stylePills').style.display = ['explain','summary','chars'].includes(mode) ? 'none' : 'flex';
-}
-function setStyle(btn, s) {
-  tlStyle = s;
-  document.querySelectorAll('.spill').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-}
-function tlCount() { document.getElementById('tlCharC').textContent = document.getElementById('tlText').value.length.toLocaleString() + ' 文字'; }
-function tlClear() {
+document.querySelectorAll('.mp').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.mp').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+    tlMode = btn.dataset.mode;
+    document.getElementById('spills').style.display = ['explain','summary','chars'].includes(tlMode) ? 'none' : 'flex';
+  });
+});
+document.querySelectorAll('.sp').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.sp').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+    tlStyle = btn.dataset.sty;
+  });
+});
+document.getElementById('tlText').addEventListener('input', () => {
+  document.getElementById('tlCharC').textContent = document.getElementById('tlText').value.length.toLocaleString() + ' 文字';
+});
+document.getElementById('tlClearBtn').addEventListener('click', () => {
   document.getElementById('tlText').value = '';
   document.getElementById('tlCharC').textContent = '0 文字';
-  document.getElementById('tlBox1').classList.remove('show');
-  document.getElementById('tlBox2').classList.remove('show');
-}
+  document.getElementById('tlBox1').classList.remove('on');
+  document.getElementById('tlBox2').classList.remove('on');
+});
 
-async function runTl() {
+document.getElementById('runBtn').addEventListener('click', async () => {
   const txt = document.getElementById('tlText').value.trim();
-  if (!txt) { showErrMsg('tlErr', 'テキストを入力してください。'); return; }
+  if (!txt) { showErr('tlErr', 'テキストを入力してください。'); return; }
   const btn = document.getElementById('runBtn');
   btn.disabled = true; btn.textContent = '処理中...';
-  document.getElementById('tlErr').classList.remove('show');
-  document.getElementById('tlBox1').classList.remove('show');
-  document.getElementById('tlBox2').classList.remove('show');
-  const src = txt.substring(0, 4000);
-  const sm = { natural:'自然で読みやすい日本語', literary:'文学的で詩的な日本語', literal:'原文に忠実な直訳' };
+  document.getElementById('tlErr').classList.remove('on');
+  document.getElementById('tlBox1').classList.remove('on');
+  document.getElementById('tlBox2').classList.remove('on');
+  const src = txt.substring(0,4000);
+  const sm = {natural:'自然で読みやすい日本語',literary:'文学的で詩的な日本語',literal:'原文に忠実な直訳'};
   try {
-    if (tlMode === 'translate' || tlMode === 'both') {
+    if (tlMode==='translate'||tlMode==='both') {
       setBox1('✦ 日本語翻訳');
       document.getElementById('tlBox1Text').innerHTML = ld('翻訳中...');
       document.getElementById('tlBox1Text').textContent = await callAI(`次の韓国語テキストを${sm[tlStyle]}に翻訳してください。翻訳文のみ返してください:\n\n${src}`, 0.5);
     }
-    if (tlMode === 'explain' || tlMode === 'both') {
-      document.getElementById('tlBox2').classList.add('show');
+    if (tlMode==='explain'||tlMode==='both') {
+      document.getElementById('tlBox2').classList.add('on');
       document.getElementById('tlBox2Text').innerHTML = ld('解説中...');
-      document.getElementById('tlBox2Text').textContent = await callAI(`次の韓国語小説について日本語で文学的な解説をしてください。雰囲気・表現技法・文化的背景・感情効果を含めてください:\n\n${src}`, 0.7, 1500, true);
+      document.getElementById('tlBox2Text').textContent = await callAI(`次の韓国語小説について日本語で文学的な解説をしてください:\n\n${src}`, 0.7, 1500, true);
     }
-    if (tlMode === 'summary') {
+    if (tlMode==='summary') {
       setBox1('✦ あらすじ要約');
       document.getElementById('tlBox1Text').innerHTML = ld('要約中...');
       document.getElementById('tlBox1Text').textContent = await callAI(`次の韓国小説を日本語で3〜5文で要約してください:\n\n${src}`, 0.5, 800);
     }
-    if (tlMode === 'chars') {
+    if (tlMode==='chars') {
       setBox1('✦ 登場人物整理');
       document.getElementById('tlBox1Text').innerHTML = ld('整理中...');
       document.getElementById('tlBox1Text').textContent = await callAI(`次の韓国小説から登場人物を日本語でリスト形式で整理してください:\n\n${src}`, 0.5, 800);
     }
   } catch(e) {
-    showErrMsg('tlErr', 'エラー: ' + e.message);
-  }
-  btn.disabled = false; btn.textContent = '実行する →';
-}
-
-function setBox1(label) {
-  document.getElementById('tlBox1Head').innerHTML = label + ' <span class="badge">AI</span>';
-  document.getElementById('tlBox1').classList.add('show');
-}
-
-// ── ユーティリティ ──
-function showErrMsg(id, msg) { const el = document.getElementById(id); el.textContent = msg; el.classList.add('show'); }
-function cp(id) { navigator.clipboard.writeText(document.getElementById(id).textContent).then(() => alert('コピーしました！')); }
-function ld(label) { return `<div class="ld"><div class="d"></div><div class="d"></div><div class="d"></div>${label?`<span style="margin-left:6px">${label}</span>`:''}</div>`; }
-function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-</script>
-</body>
-</html>
-!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="AI Browser">
-<title>AI Browser</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --bg: #0a0a0f;
-    --surface: #13131a;
-    --surface2: #1c1c26;
-    --border: #2a2a3a;
-    --accent: #7c6aff;
-    --accent2: #ff6a9e;
-    --text: #e8e8f0;
-    --text2: #8888aa;
-    --r: 14px;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-  html, body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    height: 100%;
-    overflow-x: hidden;
-  }
-
-  /* ── ヘッダー ── */
-  .header {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    background: rgba(10,10,15,0.97);
-    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-    border-bottom: 1px solid var(--border);
-    padding: 10px 14px;
-    padding-top: calc(10px + env(safe-area-inset-top));
-  }
-
-  .header-row {
-    display: flex; align-items: center; gap: 10px;
-  }
-
-  .logo {
-    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    flex-shrink: 0; cursor: pointer; user-select: none;
-  }
-
-  .search-bar {
-    flex: 1; display: flex; align-items: center;
-    background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 50px; padding: 0 6px 0 14px; gap: 6px;
-    transition: border-color 0.2s;
-  }
-  .search-bar:focus-within { border-color: var(--accent); }
-  .search-bar input {
-    flex: 1; background: none; border: none; outline: none;
-    color: var(--text); font-size: 16px; /* 16px以上でiOSズーム防止 */
-    padding: 10px 0; min-width: 0; font-family: 'DM Sans', sans-serif;
-  }
-  .search-bar input::placeholder { color: var(--text2); font-size: 14px; }
-  .search-go {
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    border: none; color: white; width: 34px; height: 34px; border-radius: 50%;
-    cursor: pointer; font-size: 15px; flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .search-go:active { transform: scale(0.9); }
-
-  /* ── タブバー ── */
-  .tabs {
-    position: fixed; top: calc(56px + env(safe-area-inset-top)); left: 0; right: 0; z-index: 99;
-    background: rgba(10,10,15,0.97);
-    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-    border-bottom: 1px solid var(--border);
-    display: flex;
-  }
-  .tab {
-    flex: 1; padding: 12px 8px; background: none; border: none; color: var(--text2);
-    font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
-    border-bottom: 2px solid transparent; cursor: pointer;
-    display: flex; align-items: center; justify-content: center; gap: 5px;
-    transition: color 0.2s;
-  }
-  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
-
-  /* ── コンテンツエリア ── */
-  .screen {
-    display: none;
-    padding: 16px 14px 100px;
-    padding-top: calc(112px + env(safe-area-inset-top));
-  }
-  .screen.active { display: block; }
-
-  /* ── ホーム ── */
-  .home-hero {
-    text-align: center; padding: 24px 0 20px;
-  }
-  .home-title {
-    font-family: 'Syne', sans-serif; font-size: 36px; font-weight: 800;
-    background: linear-gradient(135deg, #fff 20%, var(--accent) 60%, var(--accent2));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    margin-bottom: 6px;
-  }
-  .home-sub { font-size: 13px; color: var(--text2); }
-
-  .genres {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px;
-  }
-  .genre-btn {
-    background: var(--surface); border: 1px solid var(--border); border-radius: var(--r);
-    padding: 16px 8px; text-align: center; cursor: pointer;
-    transition: border-color 0.15s, background 0.15s;
-  }
-  .genre-btn:active { border-color: var(--accent); background: var(--surface2); }
-  .genre-btn .icon { font-size: 24px; margin-bottom: 5px; }
-  .genre-btn .name { font-size: 12px; color: var(--text2); }
-
-  .tip-box {
-    background: var(--surface); border: 1px solid var(--border); border-radius: var(--r);
-    padding: 14px; font-size: 13px; color: var(--text2); line-height: 1.7;
-  }
-  .tip-box b { color: var(--accent); }
-
-  /* ── 検索結果 ── */
-  .result-count { font-size: 12px; color: var(--text2); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
-  .result-count span { background: var(--accent); color: white; font-size: 11px; padding: 2px 7px; border-radius: 4px; }
-  .result-card {
-    background: var(--surface); border: 1px solid var(--border); border-radius: var(--r);
-    padding: 14px; margin-bottom: 10px; cursor: pointer;
-    animation: up 0.3s ease forwards; opacity: 0;
-    active-color: var(--surface2);
-  }
-  .result-card:active { background: var(--surface2); border-color: var(--accent); }
-  .r-source { font-size: 11px; color: var(--accent); margin-bottom: 4px; }
-  .r-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; margin-bottom: 5px; line-height: 1.3; }
-  .r-snippet { font-size: 13px; color: var(--text2); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-
-  /* ── リーダー ── */
-  .back-row { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-  .back-btn {
-    background: var(--surface); border: 1px solid var(--border); color: var(--text);
-    padding: 9px 16px; border-radius: 50px; font-size: 14px; cursor: pointer;
-    display: flex; align-items: center; gap: 6px; white-space: nowrap; flex-shrink: 0;
-  }
-  .back-btn:active { border-color: var(--accent); }
-  .reader-url { font-size: 11px; color: var(--text2); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-  .slabel {
-    font-size: 11px; font-weight: 600; color: var(--text2); letter-spacing: 0.07em;
-    text-transform: uppercase; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;
-  }
-  .slabel::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-
-  .paste-hint {
-    background: var(--surface2); border: 1px dashed var(--border); border-radius: var(--r);
-    padding: 12px 14px; margin-bottom: 12px; font-size: 13px; color: var(--text2); line-height: 1.7;
-  }
-  .paste-hint b { color: var(--accent); }
-
-  .paste-box {
-    background: var(--surface); border: 1px solid var(--border); border-radius: var(--r);
-    padding: 0 14px; margin-bottom: 12px;
-  }
-  .paste-box:focus-within { border-color: var(--accent); }
-  .paste-box textarea {
-    width: 100%; background: none; border: none; outline: none; color: var(--text);
-    font-family: 'DM Sans', sans-serif; font-size: 16px; line-height: 1.8;
-    resize: none; min-height: 120px; padding: 14px 0;
-  }
-  .paste-box textarea::placeholder { color: var(--text2); font-size: 14px; }
-  .paste-foot {
-    display: flex; justify-content: space-between; align-items: center;
-    border-top: 1px solid var(--border); padding: 8px 0 10px;
-  }
-  .char-c { font-size: 11px; color: var(--text2); }
-  .clear-btn2 { background: none; border: none; color: var(--text2); font-size: 12px; cursor: pointer; padding: 4px 8px; border-radius: 6px; }
-  .clear-btn2:active { color: var(--accent2); }
-
-  .ai-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-bottom: 10px; }
-  .ai-btn {
-    padding: 14px 8px; border-radius: var(--r); border: 1px solid var(--border);
-    background: var(--surface); color: var(--text); cursor: pointer;
-    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
-    display: flex; align-items: center; justify-content: center; gap: 6px; transition: background 0.15s;
-  }
-  .ai-btn:active { background: var(--surface2); border-color: var(--accent); }
-  .ai-btn:disabled { opacity: 0.3; }
-  .ai-btn.primary {
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    border-color: transparent; color: white;
-  }
-  .ai-btn.primary:active { opacity: 0.8; }
-
-  .q-row { display: flex; gap: 8px; margin-bottom: 14px; }
-  .q-row input {
-    flex: 1; background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 50px; padding: 12px 14px; color: var(--text);
-    font-family: 'DM Sans', sans-serif; font-size: 16px; outline: none; min-width: 0;
-  }
-  .q-row input:focus { border-color: var(--accent); }
-  .q-row input::placeholder { color: var(--text2); font-size: 14px; }
-  .q-row button {
-    background: var(--accent); border: none; color: white;
-    padding: 12px 16px; border-radius: 50px; font-size: 14px; cursor: pointer; flex-shrink: 0;
-  }
-  .q-row button:active { opacity: 0.8; }
-
-  /* ── 結果ボックス ── */
-  .ai-box {
-    background: var(--surface); border: 1px solid var(--border); border-radius: var(--r);
-    padding: 16px; margin-bottom: 10px; display: none; animation: up 0.3s ease;
-  }
-  .ai-box.show { display: block; }
-  .ai-box-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; }
-  .badge { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: white; font-size: 10px; padding: 2px 8px; border-radius: 50px; font-family: 'DM Sans', sans-serif; font-weight: 400; }
-  .ai-box-text { font-size: 14px; line-height: 1.9; color: var(--text); white-space: pre-wrap; }
-  .copy-btn { margin-top: 12px; background: var(--surface2); border: 1px solid var(--border); color: var(--text2); padding: 8px 16px; border-radius: 50px; font-size: 12px; cursor: pointer; }
-  .copy-btn:active { border-color: var(--accent); color: var(--accent); }
-
-  /* ── 翻訳タブ ── */
-  .tl-title { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; margin-bottom: 4px; }
-  .tl-sub { font-size: 13px; color: var(--text2); margin-bottom: 16px; }
-  .pills { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 12px; }
-  .pill {
-    padding: 8px 16px; border-radius: 50px; border: 1px solid var(--border);
-    background: var(--surface); color: var(--text2); font-size: 13px; cursor: pointer; transition: all 0.15s;
-  }
-  .pill.active { background: linear-gradient(135deg, var(--accent), var(--accent2)); border-color: transparent; color: white; font-weight: 500; }
-  .spills { display: flex; gap: 7px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
-  .spill-label { font-size: 12px; color: var(--text2); }
-  .spill { padding: 6px 14px; border-radius: 50px; border: 1px solid var(--border); background: var(--surface); color: var(--text2); font-size: 13px; cursor: pointer; }
-  .spill.active { border-color: var(--accent); color: var(--accent); }
-
-  .run-btn {
-    width: 100%; padding: 15px; border-radius: var(--r); border: none;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    color: white; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 500;
-    cursor: pointer; margin-bottom: 14px; letter-spacing: 0.02em;
-  }
-  .run-btn:active { transform: scale(0.98); opacity: 0.9; }
-  .run-btn:disabled { opacity: 0.4; }
-
-  /* ── エラー ── */
-  .err {
-    background: rgba(255,80,80,0.1); border: 1px solid rgba(255,80,80,0.3);
-    border-radius: var(--r); padding: 12px 14px; color: #ff8888; font-size: 13px;
-    margin-bottom: 10px; display: none;
-  }
-  .err.show { display: block; }
-
-  /* ── ローディング ── */
-  .ld { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 24px; color: var(--text2); font-size: 13px; }
-  .d { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: b 0.8s infinite; }
-  .d:nth-child(2) { animation-delay: 0.15s; }
-  .d:nth-child(3) { animation-delay: 0.3s; }
-  @keyframes b { 0%,80%,100% { transform: scale(0.6); opacity: 0.3; } 40% { transform: scale(1); opacity: 1; } }
-  @keyframes up { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-  /* ── ボトムセーフエリア ── */
-  .safe-bottom { height: env(safe-area-inset-bottom); }
-</style>
-</head>
-<body>
-
-<!-- ヘッダー -->
-<header class="header">
-  <div class="header-row">
-    <div class="logo" onclick="goHome()">AI✦</div>
-    <div class="search-bar">
-      <input type="text" id="searchInput" placeholder="키워드 검색..." autocomplete="off" inputmode="search" />
-      <button class="search-go" onclick="doSearch()">→</button>
-    </div>
-  </div>
-</header>
-
-<!-- タブ -->
-<div class="tabs">
-  <button class="tab active" id="tab-home" onclick="switchTab('home')">🏠 ホーム</button>
-  <button class="tab" id="tab-tl" onclick="switchTab('tl')">🌐 翻訳・解説</button>
-</div>
-
-<!-- ホーム -->
-<div class="screen active" id="screen-home">
-  <div class="home-hero">
-    <div class="home-title">AI Browser</div>
-    <div class="home-sub">韓国小説を検索・翻訳・AI解説</div>
-  </div>
-  <div class="genres">
-    <div class="genre-btn" onclick="quickSearch('munpia 판타지')"><div class="icon">⚔️</div><div class="name">판타지</div></div>
-    <div class="genre-btn" onclick="quickSearch('munpia 로맨스')"><div class="icon">💕</div><div class="name">로맨스</div></div>
-    <div class="genre-btn" onclick="quickSearch('munpia 무협')"><div class="icon">🥷</div><div class="name">무협</div></div>
-    <div class="genre-btn" onclick="quickSearch('munpia 인기')"><div class="icon">🔥</div><div class="name">인기</div></div>
-    <div class="genre-btn" onclick="quickSearch('munpia 최신')"><div class="icon">🆕</div><div class="name">최신</div></div>
-    <div class="genre-btn" onclick="quickSearch('munpia 소설')"><div class="icon">📖</div><div class="name">Munpia</div></div>
-  </div>
-  <div class="tip-box">
-    💡 <b>使い方</b><br>
-    ① ジャンルや検索バーから小説を探す<br>
-    ② 読みたいページのテキストをコピー<br>
-    ③「翻訳・解説」タブに貼り付けてAI翻訳
-  </div>
-</div>
-
-<!-- 検索結果 -->
-<div class="screen" id="screen-results">
-  <div class="result-count"><span id="rCount">0</span> 件の結果</div>
-  <div id="rList"></div>
-</div>
-
-<!-- リーダー -->
-<div class="screen" id="screen-reader">
-  <div class="back-row">
-    <button class="back-btn" onclick="goBack()">← 戻る</button>
-    <div class="reader-url" id="rUrl"></div>
-  </div>
-
-  <div class="paste-hint">
-    ⚠️ munpia.comは直接取得できません。<br>
-    <b>テキストをコピー → 下に貼り付け → AI翻訳</b>
-  </div>
-
-  <div class="slabel">📋 テキストを貼り付け</div>
-  <div class="paste-box">
-    <textarea id="rText" placeholder="ここに韓国語を貼り付け..." oninput="rCount()"></textarea>
-    <div class="paste-foot">
-      <span class="char-c" id="rCharC">0 文字</span>
-      <button class="clear-btn2" onclick="rClear()">クリア</button>
-    </div>
-  </div>
-
-  <div class="slabel">🤖 AI操作</div>
-  <div class="ai-grid">
-    <button class="ai-btn primary" onclick="rAI('translate')">🌐 翻訳</button>
-    <button class="ai-btn" onclick="rAI('explain')">🤖 場面解説</button>
-    <button class="ai-btn" onclick="rAI('summary')">📝 要約</button>
-    <button class="ai-btn" onclick="rAI('chars')">👥 登場人物</button>
-  </div>
-  <div class="q-row">
-    <input type="text" id="rQ" placeholder="AIに質問..." />
-    <button onclick="rCustom()">送信</button>
-  </div>
-  <div class="err" id="rErr"></div>
-  <div class="ai-box" id="rBox">
-    <div class="ai-box-head">✦ AI回答 <span class="badge">Gemini</span></div>
-    <div class="ai-box-text" id="rBoxText"></div>
-    <button class="copy-btn" onclick="cp('rBoxText')">📋 コピー</button>
-  </div>
-</div>
-
-<!-- 翻訳・解説タブ -->
-<div class="screen" id="screen-tl">
-  <div class="tl-title">翻訳 & AI解説</div>
-  <div class="tl-sub">韓国語テキストを貼り付けてAI翻訳・解説</div>
-
-  <div class="pills">
-    <button class="pill active" onclick="setMode(this,'translate')">🌐 翻訳</button>
-    <button class="pill" onclick="setMode(this,'explain')">📖 文学解説</button>
-    <button class="pill" onclick="setMode(this,'summary')">📝 要約</button>
-    <button class="pill" onclick="setMode(this,'chars')">👥 登場人物</button>
-    <button class="pill" onclick="setMode(this,'both')">🌐+📖 両方</button>
-  </div>
-
-  <div class="spills" id="spills">
-    <span class="spill-label">スタイル：</span>
-    <button class="spill active" onclick="setStyle(this,'natural')">自然</button>
-    <button class="spill" onclick="setStyle(this,'literary')">文学的</button>
-    <button class="spill" onclick="setStyle(this,'literal')">直訳</button>
-  </div>
-
-  <div class="paste-box">
-    <textarea id="tlText" placeholder="ここに韓国語を貼り付け..." oninput="tlCount()"></textarea>
-    <div class="paste-foot">
-      <span class="char-c" id="tlCharC">0 文字</span>
-      <button class="clear-btn2" onclick="tlClear()">クリア</button>
-    </div>
-  </div>
-
-  <button class="run-btn" id="runBtn" onclick="runTl()">実行する →</button>
-
-  <div class="err" id="tlErr"></div>
-
-  <div class="ai-box" id="tlBox1">
-    <div class="ai-box-head" id="tlBox1Head">✦ 日本語翻訳 <span class="badge">Gemini</span></div>
-    <div class="ai-box-text" id="tlBox1Text"></div>
-    <button class="copy-btn" onclick="cp('tlBox1Text')">📋 コピー</button>
-  </div>
-  <div class="ai-box" id="tlBox2">
-    <div class="ai-box-head">✦ AI文学解説 <span class="badge">Gemini</span></div>
-    <div class="ai-box-text" id="tlBox2Text"></div>
-    <button class="copy-btn" onclick="cp('tlBox2Text')">📋 コピー</button>
-  </div>
-</div>
-
-<div class="safe-bottom"></div>
-
-<script>
-let curQuery = '';
-let tlMode = 'translate';
-let tlStyle = 'natural';
-
-// ── API ──
-async function ai(prompt, temp=0.7, max=2000) {
-  const res = await fetch('/api/gemini', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ prompt, temperature: temp, maxTokens: max })
-  });
-  const d = await res.json();
-  if (d.error) throw new Error(d.error);
-  return d.text;
-}
-
-// ── タブ ──
-function switchTab(tab) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('tab-' + tab).classList.add('active');
-  if (tab === 'tl') {
-    showScreen('tl');
-  } else {
-    if (curQuery && document.getElementById('rList').children.length > 0) showScreen('results');
-    else showScreen('home');
-  }
-}
-
-function showScreen(name) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen-' + name).classList.add('active');
-  window.scrollTo(0, 0);
-}
-
-// ── 検索 ──
-const si = document.getElementById('searchInput');
-si.addEventListener('keydown', e => { if (e.key === 'Enter') { si.blur(); doSearch(); } });
-
-function quickSearch(q) {
-  si.value = q;
-  doSearch();
-}
-
-function doSearch() {
-  const val = si.value.trim();
-  if (!val) return;
-  curQuery = val;
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('tab-home').classList.add('active');
-  showScreen('results');
-  fetchResults(val);
-}
-
-function goHome() {
-  curQuery = '';
-  si.value = '';
-  showScreen('home');
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('tab-home').classList.add('active');
-}
-
-async function fetchResults(query) {
-  const list = document.getElementById('rList');
-  list.innerHTML = ld('検索中...');
-  try {
-    const prompt = `「${query}」に関連する韓国小説の検索結果を10件、以下のJSON形式のみで返してください（説明文不要）:
-[{"title":"タイトル","snippet":"説明2〜3文","url":"https://www.munpia.com/page/...","source":"munpia.com"}]
-必ず10件、JSON配列のみ返すこと。`;
-    const txt = await ai(prompt, 0.3, 2000);
-    const clean = txt.replace(/```json|```/g,'').trim();
-    const results = JSON.parse(clean);
-    document.getElementById('rCount').textContent = results.length;
-    list.innerHTML = '';
-    results.forEach((r, i) => {
-      const el = document.createElement('div');
-      el.className = 'result-card';
-      el.style.animationDelay = i * 0.04 + 's';
-      el.innerHTML = `<div class="r-source">🔗 ${esc(r.source||'munpia.com')}</div><div class="r-title">${esc(r.title)}</div><div class="r-snippet">${esc(r.snippet)}</div>`;
-      el.onclick = () => openReader(r.url);
-      list.appendChild(el);
-    });
-  } catch(e) {
-    list.innerHTML = `<div class="err show">検索エラー: ${e.message}</div>`;
-  }
-}
-
-// ── リーダー ──
-function openReader(url) {
-  document.getElementById('rUrl').textContent = url;
-  document.getElementById('rBox').classList.remove('show');
-  document.getElementById('rErr').classList.remove('show');
-  document.getElementById('rText').value = '';
-  document.getElementById('rCharC').textContent = '0 文字';
-  showScreen('reader');
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('tab-home').classList.add('active');
-}
-
-function goBack() {
-  curQuery ? showScreen('results') : showScreen('home');
-}
-
-function rCount() { document.getElementById('rCharC').textContent = document.getElementById('rText').value.length.toLocaleString() + ' 文字'; }
-function rClear() { document.getElementById('rText').value = ''; document.getElementById('rCharC').textContent = '0 文字'; document.getElementById('rBox').classList.remove('show'); }
-
-async function rAI(type) {
-  const txt = document.getElementById('rText').value.trim();
-  if (!txt) { showErr('rErr', 'テキストを貼り付けてください。'); return; }
-  const src = txt.substring(0, 4000);
-  const map = {
-    translate: `以下の韓国語テキストを自然で読みやすい日本語に翻訳してください。翻訳文のみ返してください:\n\n${src}`,
-    explain:   `以下は韓国小説の一場面です。日本語で詳しく解説してください。登場人物の感情・状況・重要な描写を説明してください:\n\n${src}`,
-    summary:   `以下の韓国小説を日本語で3〜5文で要約してください:\n\n${src}`,
-    chars:     `以下の韓国小説から登場人物を日本語でリスト形式で整理してください:\n\n${src}`
-  };
-  await runBox('rErr','rBox','rBoxText', map[type]);
-}
-
-async function rCustom() {
-  const q = document.getElementById('rQ').value.trim();
-  if (!q) return;
-  const txt = document.getElementById('rText').value.trim();
-  const prompt = txt ? `以下の韓国小説について日本語で答えてください。\n内容:\n${txt.substring(0,3000)}\n\n質問: ${q}` : q;
-  document.getElementById('rQ').value = '';
-  await runBox('rErr','rBox','rBoxText', prompt);
-}
-
-async function runBox(errId, boxId, textId, prompt) {
-  document.getElementById(errId).classList.remove('show');
-  document.getElementById(boxId).classList.add('show');
-  document.getElementById(textId).innerHTML = ld('');
-  try {
-    document.getElementById(textId).textContent = await ai(prompt);
-  } catch(e) {
-    document.getElementById(boxId).classList.remove('show');
-    showErr(errId, 'AIエラー: ' + e.message);
-  }
-}
-
-// ── 翻訳タブ ──
-function setMode(btn, mode) {
-  tlMode = mode;
-  document.querySelectorAll('.pill').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('spills').style.display = ['explain','summary','chars'].includes(mode) ? 'none' : 'flex';
-}
-function setStyle(btn, s) {
-  tlStyle = s;
-  document.querySelectorAll('.spill').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-}
-function tlCount() { document.getElementById('tlCharC').textContent = document.getElementById('tlText').value.length.toLocaleString() + ' 文字'; }
-function tlClear() {
-  document.getElementById('tlText').value = '';
-  document.getElementById('tlCharC').textContent = '0 文字';
-  document.getElementById('tlBox1').classList.remove('show');
-  document.getElementById('tlBox2').classList.remove('show');
-}
-
-async function runTl() {
-  const txt = document.getElementById('tlText').value.trim();
-  if (!txt) { showErr('tlErr', 'テキストを入力してください。'); return; }
-  const btn = document.getElementById('runBtn');
-  btn.disabled = true; btn.textContent = '処理中...';
-  document.getElementById('tlErr').classList.remove('show');
-  document.getElementById('tlBox1').classList.remove('show');
-  document.getElementById('tlBox2').classList.remove('show');
-  const src = txt.substring(0, 4000);
-  const sm = { natural:'自然で読みやすい日本語', literary:'文学的で詩的な日本語', literal:'原文に忠実な直訳' };
-  try {
-    if (tlMode === 'translate' || tlMode === 'both') {
-      setB1('✦ 日本語翻訳');
-      document.getElementById('tlBox1Text').innerHTML = ld('翻訳中...');
-      document.getElementById('tlBox1Text').textContent = await ai(`次の韓国語テキストを${sm[tlStyle]}に翻訳してください。翻訳文のみ返してください。\n\n${src}`, 0.5);
-    }
-    if (tlMode === 'explain' || tlMode === 'both') {
-      document.getElementById('tlBox2').classList.add('show');
-      document.getElementById('tlBox2Text').innerHTML = ld('解説中...');
-      document.getElementById('tlBox2Text').textContent = await ai(`次の韓国語小説について日本語で文学的な解説をしてください。雰囲気・表現技法・文化的背景・感情効果を含めてください。\n\n${src}`, 0.7);
-    }
-    if (tlMode === 'summary') {
-      setB1('✦ あらすじ要約');
-      document.getElementById('tlBox1Text').innerHTML = ld('要約中...');
-      document.getElementById('tlBox1Text').textContent = await ai(`次の韓国小説を日本語で3〜5文で要約してください:\n\n${src}`, 0.5, 1000);
-    }
-    if (tlMode === 'chars') {
-      setB1('✦ 登場人物整理');
-      document.getElementById('tlBox1Text').innerHTML = ld('整理中...');
-      document.getElementById('tlBox1Text').textContent = await ai(`次の韓国小説から登場人物を日本語でリスト形式で整理してください:\n\n${src}`, 0.5, 1000);
-    }
-  } catch(e) {
     showErr('tlErr', 'エラー: ' + e.message);
   }
   btn.disabled = false; btn.textContent = '実行する →';
+});
+
+function setBox1(label) {
+  document.getElementById('tlBox1Head').innerHTML = label + ' <span class="bdg">AI</span>';
+  document.getElementById('tlBox1').classList.add('on');
 }
 
-function setB1(label) {
-  document.getElementById('tlBox1Head').innerHTML = label + ' <span class="badge">Gemini</span>';
-  document.getElementById('tlBox1').classList.add('show');
-}
+// コピーボタン
+document.querySelectorAll('.cpbtn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const txt = document.getElementById(btn.dataset.cp)?.textContent;
+    if (txt) navigator.clipboard.writeText(txt).then(() => alert('コピーしました！'));
+  });
+});
 
 // ── ユーティリティ ──
-function showErr(id, msg) { const el = document.getElementById(id); el.textContent = msg; el.classList.add('show'); }
-function cp(id) { navigator.clipboard.writeText(document.getElementById(id).textContent).then(() => alert('コピーしました！')); }
+function showErr(id, msg) { const el = document.getElementById(id); el.textContent = msg; el.classList.add('on'); }
 function ld(label) { return `<div class="ld"><div class="d"></div><div class="d"></div><div class="d"></div>${label?`<span style="margin-left:6px">${label}</span>`:''}</div>`; }
 function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// レイアウト初期化
+window.addEventListener('load', adjustLayout);
+window.addEventListener('resize', adjustLayout);
+adjustLayout();
 </script>
 </body>
 </html>
