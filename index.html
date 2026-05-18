@@ -525,13 +525,16 @@ async function openReader(url, title='') {
   curTitle = title || url;
   curParas = [];
   document.getElementById('readerTitle').textContent = curTitle;
-  document.getElementById('readerContent').innerHTML = ld('ページを取得中...');
   document.getElementById('tlAllBtn').disabled = true;
   document.getElementById('tlAllBtn').textContent = '🌐 全文翻訳';
   setReader(true);
 
+  const c = document.getElementById('readerContent');
+  c.style.padding = '14px';
+  c.innerHTML = ld('ページを取得中...');
+
   try {
-    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+    const proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent(url);
     const res = await fetch(proxyUrl);
     const data = await res.json();
     if (!data.contents) throw new Error('取得失敗');
@@ -546,15 +549,57 @@ async function openReader(url, title='') {
 function extractText(html) {
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, 'text/html');
-  ['script','style','nav','footer','header','aside','iframe','button','form'].forEach(tag =>
-    doc.querySelectorAll(tag).forEach(el => el.remove())
-  );
-  const sels = ['.novel_view','.view-content','#novel_content','.chapter-content','article','main','[role="main"]','.content','#content'];
-  for (const sel of sels) {
-    const el = doc.querySelector(sel);
-    if (el && el.textContent.trim().length > 100) return el.textContent.trim().substring(0,15000);
+
+  // ノイズを削除（広告・メニュー・サイドバーなど）
+  const removeSelectors = [
+    'script','style','noscript','iframe',
+    'nav','header','footer','aside',
+    'button','form','input','select',
+    '.ad','[class*="ad-"]','[class*="banner"]',
+    '[class*="menu"]','[class*="nav"]',
+    '[class*="sidebar"]','[class*="comment"]',
+    '[class*="share"]','[class*="related"]',
+    '[id*="ad"]','[id*="banner"]','[id*="sidebar"]'
+  ];
+  removeSelectors.forEach(sel => {
+    try { doc.querySelectorAll(sel).forEach(el => el.remove()); } catch(e) {}
+  });
+
+  // 本文を抽出（munpia向けセレクタ優先）
+  const mainSelectors = [
+    '.novel_view', '.view-content', '#novel_content',
+    '.chapter-content', '.content-section',
+    'article', 'main', '[role="main"]',
+    '.post-content', '.article-body', '.entry-content',
+    '#content', '.content', '.text'
+  ];
+
+  let mainEl = null;
+  for (const sel of mainSelectors) {
+    try {
+      const el = doc.querySelector(sel);
+      if (el && el.textContent.trim().length > 200) {
+        mainEl = el;
+        break;
+      }
+    } catch(e) {}
   }
-  return (doc.body?.textContent||'').trim().substring(0,15000);
+
+  // 見つからない場合はbodyから最も長いdivを探す
+  if (!mainEl) {
+    let maxLen = 0;
+    doc.querySelectorAll('div, section, p').forEach(el => {
+      const len = el.textContent.trim().length;
+      if (len > maxLen && len < 50000) {
+        maxLen = len;
+        mainEl = el;
+      }
+    });
+  }
+
+  if (!mainEl) mainEl = doc.body;
+
+  return (mainEl?.textContent || '').trim().substring(0, 15000);
 }
 
 function renderReader(text) {
